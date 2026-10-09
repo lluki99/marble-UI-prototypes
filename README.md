@@ -1,26 +1,39 @@
-# Marble · Prototipos de UI
+# Marble trails
 
-Prototipos web independientes de la interfaz de carrera de un videojuego de canicas. HTML, CSS y JavaScript, sin dependencias de ejecución ni compilación.
+Independent HTML race-interface prototypes. No build step or runtime packages.
 
-## Abrir
+## Open
 
-Desde la carpeta del repositorio, inicia un servidor estático, por ejemplo `python -m http.server 4173`. Abre `http://localhost:4173/index.html` (hub) o `http://localhost:4173/prototype-01.html` (Cabina orbital). También se pueden abrir los HTML directamente. Las fuentes de Google son opcionales; hay fuentes de reserva.
+Start a static server in this directory, for example `python -m http.server 4173`.
 
-## Cabina orbital
+- Hub: http://localhost:4173/index.html
+- Saltwind Run: http://localhost:4173/prototype-01.html
 
-- Diálogo alternado entre Vega y el piloto, con retrato activo, avance y cierre.
-- Tres habilidades: consulta al pulsar el módulo y activación desde el detalle o con Mayús, E y Q. Estado activo, recarga con cuenta atrás y disponibilidad.
-- Minimapa retráctil con seis participantes, jugador ámbar y vista ampliada. Tecla M para recoger/desplegar.
-- Controles de demo: pausa, conversación, recargas, disponibilidad, posición y reinicio.
-- Espacio avanza el diálogo. Esc cierra la consulta, los controles o el diálogo; el mapa ampliado usa el cierre nativo de diálogo.
-- Diseño adaptado a escritorio y pantallas pequeñas; foco visible y preferencia de movimiento reducido. Con movimiento reducido la escena permanece estática, mientras los datos y cooldowns siguen actualizándose.
+HTML files also open directly. Google Fonts are optional; local font fallbacks are provided.
 
-## Alcance de la simulación
+## Saltwind Run
 
-La pista es una ilustración animada en Canvas, no un juego 3D. El recorrido del mapa representa el circuito completo; la cámara muestra un sector de forma estilizada. Cada vuelta dura 45 segundos y la carrera de tres vueltas se repite. Los efectos de habilidades son visuales; no hay física, daño ni adelantamientos automáticos. La clasificación inicial es 3/6 y se modifica con el control de demo. La pausa congela también los cooldowns.
+The revised first prototype uses the supplied Caravan SandWitch references for a warm coastal palette, flat landscape silhouettes and simple cream pictograms. All artwork, portraits and icons are original. Original mockup relationships remain: stacked speakers at bottom left, three abilities at bottom right and a retractable vertical map at top right.
 
-Los retratos e iconos son originales. Se mantiene la distribución de los mockups: comunicador abajo a la izquierda, habilidades abajo a la derecha y mapa arriba a la derecha. En pantallas estrechas el diálogo se sitúa encima de las habilidades; al consultar una habilidad se oculta temporalmente y vuelve al cerrar la consulta. La cámara acerca los participantes a la zona libre superior. Se sustituye el gesto de ratón ambiguo del tercer icono por Q para que la activación sea evaluable con teclado.
+- Radio conversation: four alternating lines, next and close. The active portrait has full opacity.
+- Abilities: inspect a symbol to see its name, description and activation button. Shift activates Boost; E activates Shield; Q activates Focus. A gold tile indicates activation; a number and filling strip indicate cooldown. Details and accessible names preserve meaning without persistent labels.
+- Map: open road, start circle and finish flag, six racers, gold player marker. M toggles visibility. The expanded map continues updating and supports Escape and native focus containment.
+- Race: one 75-second journey from start to finish. Progress is distance from the start, clamped at 100%; the timer stops at the finish. The race remains finished until restarted. There is no repeating circuit logic.
+- Demo controls: pause/resume, radio, cooldowns, ready state, position, near-finish jump and restart. The header also offers a restart button.
+- Space advances dialogue when focus is not on a button/link. Escape closes ability details, demo controls or the conversation.
 
-## Nuevas propuestas
+On small screens, inspecting an ability temporarily replaces the dialogue, restoring it on close. Participants stay in the free upper area. Reduced motion stops environmental animation while progress and cooldown data continue to update.
 
-Guardar cada propuesta en un nuevo HTML (`prototype-02.html`, etc.) y añadir su tarjeta al hub. No sobrescribir propuestas anteriores sin una solicitud de revisión.
+## Simulation limits
+
+The scene is an original SVG landscape with a Canvas road and marbles. It represents a moving camera on a coastal sector rather than rendering the full mapped road in 3D. The map, progress and rank share coherent simulated race data; scene order follows rank. Abilities are visual only, with no physics, collisions, damage or automatic overtaking. Pause also freezes cooldowns. Finishing prevents further ability activation.
+
+## Design decisions
+
+`frontend-design`: replace sci-fi panels with a coastal identity; use Varela Round for friendly names and Barlow for readable dialogue; create original scenery and portraits; remove decorative borders, headings, persistent ability names and availability text. The hub shares the same art, type and quiet asymmetrical silhouettes.
+
+`ui-ux-pro-max`: consistent simple outline icons, accessible names for icon-only controls, visible keyboard focus, controls at least 44 px, interaction states beyond color alone, progressive disclosure, responsive layouts and reduced motion. The generic generated marketing layout was discarded because it did not fit a game HUD.
+
+## New prototypes
+
+Add a separate HTML (`prototype-02.html`, etc.) and its hub entry. Revise existing proposals only on request. This redesign updates `prototype-01.html` as explicitly requested; Git retains the original iteration.
