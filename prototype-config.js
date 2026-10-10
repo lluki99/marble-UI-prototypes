@@ -4,10 +4,10 @@ window.MARBLE_CONFIG = {
   shared: {
     theme: {ink:'#344d43', paper:'#f7f0db', sage:'#668879', sea:'#8db4aa', gold:'#edc567', rust:'#ae563c', muted:'#596958', white:'#fff9e8'},
     text: {
-      brand: 'marble trails', home: 'Marble trails home', hubTitle: 'Marble trails · Prototypes',
-      hubIntro: 'A little way to go.', hubHeading: 'Pick your trail.',
-      hubFooter: 'Race UI experiments', hubFuture: 'More trails will find their way here.',
-      back: '← Trails', backLabel: 'Back to prototypes', play: 'Take the trail',
+      brand: 'M.A.R.B.L.E.', home: 'M.A.R.B.L.E. home', hubTitle: 'M.A.R.B.L.E. · Prototypes',
+      hubIntro: 'A collection of UI prototypes.', hubHeading: 'Select a prototype.',
+      hubFooter: 'M.A.R.B.L.E. prototypes', hubFuture: 'These prototypes are currently under development.',
+      back: '← All prototypes', backLabel: 'Back to prototypes', play: 'Test the UI',
       restart: 'Restart demo', restartButton: '↺ Restart demo', controls: 'Demo controls',
       scene: 'Six marbles racing along a sunlit coastal trail', raceProgress: 'Race progress',
       distance: 'Distance to finish', minimap: 'Minimap', toggleMap: 'Toggle minimap',
@@ -64,9 +64,9 @@ window.MARBLE_CONFIG = {
   // Each independent HTML selects one entry using data-prototype on <body>.
   prototypes: {
     'prototype-01': {
-      file:'prototype-01.html', number:'01', name:'Saltwind Run',
-      description:'A coastal race, a familiar voice, and a few tricks for the road.',
-      text:{pageTitle:'Saltwind Run · Marble trails'},
+      file:'prototype-01.html', number:'01', name:'Races UI',
+      description:'UI prototype for the races interface.',
+      text:{pageTitle:'Race UI · M.A.R.B.L.E.'},
       abilityOverrides:{}, assets:{}, icons:{}, iconRoles:{}, race:{}, map:{}, theme:{}
       // Override any shared text by adding its key above.
       // Override one ability: abilityOverrides:{impulse:{duration:4,cooldown:11}}
