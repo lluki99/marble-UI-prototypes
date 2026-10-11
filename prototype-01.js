@@ -6,9 +6,8 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const abilities=config.abilities,colors=config.race.colors;
 const effectIndex=id=>abilities.findIndex(a=>a.id===id);
 const physics=window.MarbleRace;
-let properties=config.marbles.map(name=>({...config.presets[name]}));
-let race=physics.create(config.race,properties),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(),enabled=new Set(Object.keys(config.events));
-let elapsed=0, paused=false, dialogIndex=0, selected=null, position=config.race.initialPosition, feedbackUntil=0, restoreDialogue=false;
+let race=physics.create(config.race),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(),enabled=new Set(Object.keys(config.events));
+let elapsed=0, paused=false, selected=null, position=config.race.initialPosition, feedbackUntil=0;
 let states=abilities.map(()=>model.idle());
 const abilityButtons=[...document.querySelectorAll('[data-ability]')];
 abilityButtons.forEach((button,i)=>{
@@ -25,19 +24,18 @@ for(let i=0;i<6;i++){
   $('map-markers').append(dot);const label=document.createElementNS('http://www.w3.org/2000/svg','text');label.dataset.racerLabel=String(i);label.textContent=i+1;label.setAttribute('class','racer-number');$('map-markers').append(label);
 }
 $('map-markers').append($('map-markers').querySelector('[data-racer="2"]'),$('map-markers').querySelector('[data-racer-label="2"]'));
-function clearRadio(){radio=window.MarbleRadio.create();$('dialogue').hidden=true;restoreDialogue=false;}
-function event(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleRadio.enqueue(radio,id,config.events[id],elapsed,config.dialogueLineDuration);tickRadio();}
-function tickRadio(){
- const current=window.MarbleRadio.tick(radio,elapsed,config.dialogueLineDuration);
- if(!current){$('dialogue').hidden=true;return;}
- const line=current.lines[current.index];restoreDialogue=selected!==null&&matchMedia('(max-width:680px)').matches;$('dialogue').hidden=restoreDialogue;
- $('dialog-text').textContent=line.text;$('speaker').textContent=text(line.who==='npc'?'npc':'you');
- $('portrait-npc').classList.toggle('active',line.who==='npc');$('portrait-player').classList.toggle('active',line.who==='player');
- $('dialog-step').textContent=text('counter',{current:current.index+1,total:current.lines.length});
+let renderedConversation=null,renderedLine=-1,radioExitTimer=null;
+function cancelRadioAnimations(){clearTimeout(radioExitTimer);radioExitTimer=null;document.querySelectorAll('.radio-dock,.radio-dock *').forEach(el=>el.getAnimations().forEach(a=>a.cancel()));}
+function clearRadio(){radioSpaceHeld=false;cancelRadioAnimations();radio=window.MarbleRadio.create();renderedConversation=null;renderedLine=-1;$('dialogue').hidden=true;$('portrait-npc').hidden=true;$('radio-dock').classList.remove('transmitting');$('portrait-player').classList.add('active');}
+function event(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleRadio.enqueue(radio,id,config.events[id],elapsed);tickRadio();}
+function tickRadio(){const current=window.MarbleRadio.tick(radio);
+if(!current){if(renderedConversation){cancelRadioAnimations();$('radio-dock').classList.remove('transmitting');$('dialogue').animate([{opacity:1},{opacity:0,transform:'translateX(-8px)'}],{duration:reducedMotion?80:120});$('portrait-npc').animate([{opacity:1},{opacity:0}],{duration:100});radioExitTimer=setTimeout(()=>{$('dialogue').hidden=true;$('portrait-npc').hidden=true;},120);}renderedConversation=null;renderedLine=-1;return;}
+if(current===renderedConversation&&current.index===renderedLine)return;const opening=current!==renderedConversation;cancelRadioAnimations();$('dialogue').hidden=false;$('portrait-npc').hidden=false;$('radio-dock').classList.add('transmitting');const line=current.lines[current.index],actor=config.characters?.[line.who];$('dialog-text').textContent=line.text;$('speaker').textContent=actor?.name||text(line.who==='player'?'you':'npc');$('portrait-npc').setAttribute('aria-label',text('callerPortrait',{name:actor?.name||text('npc')}));$('portrait-npc').querySelector('.portrait-art').innerHTML=iconMarkup(actor?.icon||'npcPortrait');$('portrait-npc').classList.toggle('active',line.who!=='player');$('portrait-player').classList.toggle('active',line.who==='player');$('dialog-step').textContent=text('counter',{current:current.index+1,total:current.lines.length});
+if(opening){$('portrait-npc').animate(reducedMotion?[{opacity:0},{opacity:1}]:[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],{duration:reducedMotion?100:140,fill:'backwards'});$('dialogue').animate(reducedMotion?[{opacity:0},{opacity:1}]:[{clipPath:'inset(0 100% 0 0)',opacity:.6},{clipPath:'inset(0 0 0 0)',opacity:1}],{duration:reducedMotion?100:190,delay:reducedMotion?0:90,fill:'backwards'});}$('dialog-text').animate([{opacity:0},{opacity:1}],{duration:opening?90:100,delay:opening&&!reducedMotion?240:0,fill:'backwards'});renderedConversation=current;renderedLine=current.index;
 }
 function detect(hits){position=physics.ranking(race).findIndex(b=>b.id===2)+1;if(position===2&&previousRank!==2)event('second');previousRank=position;if(hits.some(pair=>pair.includes(2)))event('collision');}
-function consultAbility(i){selected=i;if(matchMedia('(max-width:680px)').matches&&!$('dialogue').hidden){restoreDialogue=true;$('dialogue').hidden=true;}$('ability-detail').hidden=false;abilityButtons.forEach((b,j)=>b.classList.toggle('selected',j===i));renderAbilities();}
-function closeAbility(){const previousSelection=selected;selected=null;$('ability-detail').hidden=true;abilityButtons.forEach(b=>b.classList.remove('selected'));if(restoreDialogue){$('dialogue').hidden=false;restoreDialogue=false;}if(previousSelection!==null)abilityButtons[previousSelection].focus();}
+function consultAbility(i){selected=i;$('ability-detail').hidden=false;abilityButtons.forEach((b,j)=>b.classList.toggle('selected',j===i));renderAbilities();}
+function closeAbility(){const previousSelection=selected;selected=null;$('ability-detail').hidden=true;abilityButtons.forEach(b=>b.classList.remove('selected'));if(previousSelection!==null)abilityButtons[previousSelection].focus();}
 function activate(i){
   if(phase!=='running')return;
   const next=model.activate(states[i],abilities[i],elapsed);if(!next)return;
@@ -80,10 +78,10 @@ function openMap(){
   clone.querySelector('#map-markers').removeAttribute('id');clone.querySelector('g').classList.add('large-markers');$('large-map').replaceChildren(clone);$('map-dialog').showModal();
 }
 function setBench(open){$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));$('controls-toggle').textContent=text(open?'hideTools':'showTools');}
-function reset(){race=physics.create(config.race,properties);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';if($('map-dialog').open)$('map-dialog').close();$('map-content').hidden=false;$('map-toggle').setAttribute('aria-expanded','true');$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
+function reset(){race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';if($('map-dialog').open)$('map-dialog').close();$('map-content').hidden=false;$('map-toggle').setAttribute('aria-expanded','true');$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
 const raceDuration=config.race.duration;
 function racerProgress(i){return Math.max(0,Math.min(1,race.balls[i].s/race.length));}
-function finishRace(){phase='finished';states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';clearRadio();closeAbility();$('result').textContent=text('result',{rank:position,count:colors.length,progress:Math.floor(racerProgress(2)*100)});}
+function finishRace(){phase='finished';states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();$('result').textContent=text('result',{rank:position,count:colors.length,progress:Math.floor(racerProgress(2)*100)});}
 function updateHUD(){
   $('position').textContent=position;
   $('sim-status').textContent=text('simulationStatus',{phase:text(phase),time:elapsed.toFixed(1)});
@@ -95,30 +93,29 @@ function updateHUD(){
   $('finish-banner').hidden=elapsed<raceDuration;
   $('ability-feedback').classList.toggle('visible',elapsed<feedbackUntil);
 }
-$('dialog-close').onclick=()=>{radio.current=null;restoreDialogue=false;tickRadio();};
 abilityButtons.forEach((b,i)=>b.onclick=()=>consultAbility(i));
 $('ability-close').onclick=closeAbility;$('ability-activate').onclick=()=>activate(selected);
 $('map-toggle').onclick=toggleMap;$('map-expand').onclick=openMap;$('map-close').onclick=()=>$('map-dialog').close();
 $('controls-toggle').onclick=()=>setBench($('demo-controls').hidden);
 $('pause').onclick=()=>{paused=!paused;$('pause').textContent=text(paused?'resume':'pause');};
 $('header-reset').onclick=reset;
-$('start-race').onclick=()=>{race=physics.create(config.race,properties);phase='running';previousRank=physics.ranking(race).findIndex(b=>b.id===2)+1;$('preparation').hidden=true;$('live-tools').hidden=false;setBench(false);};
+$('start-race').onclick=()=>{race=physics.create(config.race);phase='running';previousRank=physics.ranking(race).findIndex(b=>b.id===2)+1;$('preparation').hidden=true;$('live-tools').hidden=false;setBench(false);};
 abilities.forEach(a=>{const line=document.createElement('p');line.textContent=text('abilitySetting',{...a,total:a.duration+a.cooldown});$('ability-settings').append(line);});
-properties.forEach((p,i)=>{
- const block=document.createElement('details');block.open=i===2;
- const summary=document.createElement('summary');summary.textContent=text(i===2?'playerMarble':'marble',{number:i+1})+' · '+config.race.colorNames[i];const swatch=document.createElement('span');swatch.className='marble-swatch';swatch.style.background=colors[i];swatch.setAttribute('aria-hidden','true');summary.prepend(swatch);block.append(summary);
- const presetLabel=document.createElement('label');presetLabel.textContent=text('preset');const select=document.createElement('select');
- [...Object.keys(config.presets),text('custom')].forEach(name=>{const o=document.createElement('option');o.textContent=name;select.append(o);});select.value=config.marbles[i];presetLabel.append(select);block.append(presetLabel);
- const inputs={};Object.entries(config.properties).forEach(([key,def])=>{const label=document.createElement('label');label.textContent=key[0].toUpperCase()+key.slice(1);label.title=def.description;const input=document.createElement('input');input.type='number';input.min=def.min;input.max=def.max;input.step=def.step;input.value=p[key];input.setAttribute('aria-label',summary.textContent+' '+key);input.onchange=()=>{const value=Number(input.value);p[key]=Math.max(def.min,Math.min(def.max,Number.isFinite(value)?value:def.min));input.value=p[key];select.value=text('custom');race=physics.create(config.race,properties);};label.append(input);block.append(label);const help=document.createElement('small');help.textContent=def.min+'–'+def.max+' · '+def.description;block.append(help);inputs[key]=input;});
- select.onchange=()=>{if(config.presets[select.value]){Object.assign(p,config.presets[select.value]);Object.keys(inputs).forEach(k=>inputs[k].value=p[k]);race=physics.create(config.race,properties);}};$('marble-editor').append(block);
-});
+colors.forEach((color,i)=>{const row=document.createElement('div');row.className='racer-identity';const swatch=document.createElement('span');swatch.className='marble-swatch';swatch.style.background=color;swatch.setAttribute('aria-hidden','true');row.append(swatch,text(i===2?'playerMarble':'marble',{number:i+1})+' · '+config.race.colorNames[i]);$('marble-editor').append(row);});
 Object.entries(config.events).forEach(([id,def])=>{
  const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=true;input.onchange=()=>input.checked?enabled.add(id):enabled.delete(id);label.append(input,def.label);$('event-options').append(label);
  const button=document.createElement('button');button.textContent=def.label;button.onclick=()=>{if(phase!=='running'||!enabled.has(id))return;if(id==='second')physics.forceSecond(race);if(id==='collision')physics.forceCollision(race);detect([]);};input.addEventListener('change',()=>button.disabled=!input.checked);$('event-triggers').append(button);
 });
+let radioSpaceHeld=false;
+document.addEventListener('keyup',e=>{if(e.code==='Space'&&radioSpaceHeld){e.preventDefault();radioSpaceHeld=false;}});
+window.addEventListener('blur',()=>radioSpaceHeld=false);
 document.addEventListener('keydown',e=>{
- if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||$('map-dialog').open||e.target.closest('input,select,textarea'))return;
- const i=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());if(i!==-1)activate(i);else if(e.key.toLowerCase()==='m')toggleMap();else if(e.key==='Escape'){if(selected!==null)closeAbility();else if(!$('demo-controls').hidden)setBench(false);}
+const editing=e.target.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"])');
+if(e.code==='Space'&&radioSpaceHeld&&!editing){e.preventDefault();return;}
+const action=window.MarbleRadio.spaceAction({space:e.code==='Space',open:!!radio.current,editing:!!editing,blocked:$('map-dialog').open,repeat:e.repeat});
+if(action){e.preventDefault();radioSpaceHeld=true;if(action==='advance'){window.MarbleRadio.advance(radio);tickRadio();}return;}
+if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||$('map-dialog').open||editing)return;
+const i=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());if(i!==-1)activate(i);else if(e.key.toLowerCase()==='m')toggleMap();else if(e.key==='Escape'){if(selected!==null)closeAbility();else if(!$('demo-controls').hidden)setBench(false);}
 });
 /* Pista proyectada: curvas, barandillas y canicas originales dibujadas en Canvas. */
 const canvas=$('scene'),ctx=canvas.getContext('2d');let width=0,height=0;
@@ -135,10 +132,10 @@ function drawScene(){
   const motion=0;
   for(let i=0;i<22;i++){const t=((i/22+motion)%1);const p=trackPoint(t);ctx.strokeStyle='#d5ba9d22';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x-p.half*.8,p.y);ctx.lineTo(p.x+p.half*.8,p.y);ctx.stroke();}
   for(let i=0;i<9;i++){const t=(i/9+motion*.4)%1,p=trackPoint(t);for(const side of [-1,1]){const x=p.x+side*p.half*.99;ctx.fillStyle='#877959';ctx.fillRect(x-3, p.y-13*(t+.3),6,20*(t+.3));ctx.fillStyle='#f6efd9';ctx.fillRect(x-3,p.y-13*(t+.3),6,3);}}
-  for(const [fraction,label] of [[.13,text('raceStart')],[width<=680?.68:.81,text('raceFinish')]]){const p=trackPoint(fraction);ctx.strokeStyle='#101824';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(p.x-p.half,p.y);ctx.lineTo(p.x+p.half,p.y);ctx.stroke();ctx.fillStyle='#fff1d0';for(let n=0;n<12;n+=2)ctx.fillRect(p.x-p.half+n*p.half/6,p.y-4,p.half/6,8);ctx.font='italic 800 13px sans-serif';ctx.fillStyle='#fff1d0';ctx.textAlign='center';ctx.fillText(label,p.x,p.y-12);}
+  for(const [fraction,label] of [[.13,text('raceStart')],[width<=680?.43:.81,text('raceFinish')]]){const p=trackPoint(fraction);ctx.strokeStyle='#101824';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(p.x-p.half,p.y);ctx.lineTo(p.x+p.half,p.y);ctx.stroke();ctx.fillStyle='#fff1d0';for(let n=0;n<12;n+=2)ctx.fillRect(p.x-p.half+n*p.half/6,p.y-4,p.half/6,8);ctx.font='italic 800 13px sans-serif';ctx.fillStyle='#fff1d0';ctx.textAlign='center';ctx.fillText(label,p.x,p.y-12);}
   const player=race.balls[2];
   [...race.balls].sort((a,b)=>a.s-b.s).forEach(b=>{
-    const i=b.id,t=Math.max(.12,Math.min(.86,.13+racerProgress(b.id)*(width<=680?.55:.68))),p=trackPoint(t),x=p.x+p.half*b.x/2.6,groundY=p.y,r=Math.max(12,width*(.009+.022*t));
+    const i=b.id,t=Math.max(.12,Math.min(.86,.13+racerProgress(b.id)*(width<=680?.30:.68))),p=trackPoint(t),x=p.x+p.half*b.x/2.6,groundY=p.y,r=Math.max(12,width*(.009+.022*t));
     const jumpIndex=effectIndex('jump'),ghostIndex=effectIndex('ghost'),impulseIndex=effectIndex('impulse');
     const lift=i===2?model.jumpHeight(states[jumpIndex],abilities[jumpIndex],elapsed):0;
     const y=groundY-lift*r*(reducedMotion?1:2.8);

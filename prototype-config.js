@@ -4,7 +4,7 @@ window.MARBLE_CONFIG = {
   shared: {
     theme: {ink:'#121821', paper:'#eee3c6', sage:'#526f69', sea:'#17394b', gold:'#ffd348', rust:'#bd3449', muted:'#665e50', white:'#fff6da'},
     text: {
-      raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timings', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {number}', playerMarble:'You · marble {number}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Edit each marble before starting. The run ends by time, ranked by distance.', preset:'Preset', custom:'Custom', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
+      raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timings', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {number}', playerMarble:'You · marble {number}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
       brand: 'M.A.R.B.L.E.', home: 'M.A.R.B.L.E. home', hubTitle: 'M.A.R.B.L.E. · Prototypes',
       hubIntro: 'A collection of UI prototypes.', hubHeading: 'Select a prototype.',
       hubFooter: 'M.A.R.B.L.E. prototypes', hubFuture: 'These prototypes are currently under development.',
@@ -14,7 +14,7 @@ window.MARBLE_CONFIG = {
       distance: 'Distance to finish', minimap: 'Minimap', toggleMap: 'Toggle minimap',
       toggleMapHelp: 'Toggle minimap (M)', expandMap: 'Expand minimap',
       route: 'Open road from start to finish with six racers',
-      conversation: 'Radio conversation', closeConversation: 'Close conversation',
+      callerPortrait:'{name} radio portrait', continueRadio:'Space to continue', playerPortrait:'Player radio portrait', conversation: 'Radio conversation', closeConversation: 'Close conversation',
       next: 'Next ›', done: 'Done', you: 'You', npc: 'Vega', abilities: 'Abilities',
       closeAbility: 'Close ability details', activate: 'Activate', active: 'Active', ready: 'Ready',
       cooldown: 'Cooldown {seconds} s', activeCooldown: 'Active {seconds} s',
@@ -25,7 +25,7 @@ window.MARBLE_CONFIG = {
       simulation: 'Simulation controls', tryMoment: 'Try a moment', pause: 'Pause race', resume: 'Resume race',
       radio: 'Radio call', forceCooldown: 'All on cooldown', allReady: 'All ready',
       changePosition: 'Change position', nearFinish: 'Near the finish',
-      keyboard: 'Shift / E / Q: activate · M: map · Esc: close',
+      keyboard: 'Space: continue radio · Shift / E / Q: activate · M: map',
       closeMap: 'Close expanded map', mapHeading: 'The speedway', otherRacers: 'Other racers',
       start: 'Start ○', finish: 'Finish ⚑', counter: '{current} / {total}',
       inspectName: '{name}: {state}. {inspect}', iconHelp: '{name} · {key} · Inspect',
@@ -55,24 +55,10 @@ window.MARBLE_CONFIG = {
     assets: {landscape:'speedway.svg'},
     race: {duration:60, length:1400, initialPosition:3, colorNames:['Teal','Crimson','Gold','Lime','Violet','Ivory'], colors:['#27b6ad','#e84962','#ffd348','#a4d94c','#b186e4','#fff1d0']},
     map: {path:'M112 28L133 48Q151 78 114 104Q83 127 114 149Q148 180 102 198Q50 218 66 242L94 242', start:{x:112,y:28}, finish:{x:94,y:242}},
-    properties: {
-      speed:{min:12,max:28,step:1,description:'Target forward speed (m/s); a gameplay setting.'},
-      friction:{min:0,max:2,step:.1,description:'Drag strength; higher values slow movement.'},
-      weight:{min:.5,max:4,step:.1,description:'Mass; higher values accelerate more slowly and resist collision impulses.'},
-      bounciness:{min:0,max:1,step:.1,description:'Restitution; higher values rebound more strongly.'}
-    },
-    presets: {
-      Balanced:{speed:22,friction:.5,weight:1.4,bounciness:.5},
-      Swift:{speed:26,friction:.2,weight:.7,bounciness:.8},
-      Heavy:{speed:22,friction:.5,weight:3.5,bounciness:.2},
-      Grippy:{speed:22,friction:1.8,weight:1.2,bounciness:.1}
-    },
-    marbles:['Swift','Heavy','Balanced','Grippy','Balanced','Swift'],
     events: {
       second:{label:'Reach second place',cooldown:8,lines:[{who:'npc',text:'Second place! Keep that line.'},{who:'player',text:'One more marble ahead.'}]},
       collision:{label:'Collide with the player',cooldown:6,lines:[{who:'npc',text:'A bump from the side. Steady now.'},{who:'player',text:'Still rolling, Vega.'}]}
-    },
-    dialogueLineDuration:3
+    }
 
   },
   // Each independent HTML selects one entry using data-prototype on <body>.

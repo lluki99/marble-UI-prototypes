@@ -87,41 +87,26 @@ Jump's `duration` is the total ascent/descent time; there is no loop. Ghost has 
 The hub automatically lists every registered prototype. Each HTML has its own direct URL; the shared renderer and content binder work with its selected overrides. No previous prototype needs to be overwritten.
 
 
-## Marble properties and radio events
+## Shared motion and radio events
 
-Edit `shared.properties` for input ranges/help, `shared.presets` for values, and `shared.marbles` for the six preset assignments. The third marble is the player. Per-prototype `properties`, `presets`, `marbles` and `events` can differ.
+There are no individual marble statistics or presets. `race-model.js` applies the same rules to all six: smoothly changing random rhythm/lane targets, occasional contact nudges and a brief shared contact slowdown. Set `shared.race.seed` to a number for reproducible testing; omit it for a fresh run on Reset.
 
-| Property | Range | Meaning |
-| --- | --- | --- |
-| speed | 12–28 | Gameplay target forward speed in m/s, before drag |
-| friction | 0–2 | Physical drag strength; reduces motion |
-| weight | 0.5–4 | Relative mass/inertia; changes acceleration and collision response |
-| bounciness | 0–1 | Restitution; 0 absorbs relative contact speed, 1 rebounds |
-
-```js
-presets: {
-  Balanced: {speed: 22, friction: .5, weight: 1.4, bounciness: .5},
-  // Add another preset here; it automatically appears in the editor.
-},
-```
-
-Before starting, expand a marble in the Test bench and choose a preset or edit its four numeric fields. Help and ranges appear beneath each field. Select radio events, then start. Reopen the bench during the race to trigger enabled events. Reach second place changes forward distance; collision brings a rival alongside with lateral closing velocity. Contact detection then starts the same radio event used for natural impacts. Hide the bench to evaluate the game HUD.
+The Test bench lists fixed numbers, color swatches and English color names, enabled event checkboxes, ability timings and test triggers. Reach second place guides the player toward an overtake; collision guides a nearby rival toward contact. Neither trigger teleports a marble. Natural and forced outcomes share event detection.
 
 ```js
 events: {
   collision: {
     label: 'Collide with the player', cooldown: 6,
     lines: [
-      {who: 'npc', text: 'Steady now.', duration: 3},
+      {who: 'npc', text: 'Steady now.'},
       {who: 'player', text: 'Still rolling.'}
     ]
   }
-},
-dialogueLineDuration: 3,
+}
 ```
 
-The event cooldown is a repeat guard, separate from ability cooldowns. An event cannot queue again while its conversation is current or pending. `duration` on a line overrides `dialogueLineDuration`. Definitions and copy belong here; genuinely new gameplay event types also need a detection/forced-action branch in `prototype-01.js`.
+Each Space press advances one line; Space after the last closes the conversation. Time never advances it. Held keys are ignored, and fields retain their own Space behavior. Pending/current duplicate event conversations cannot accumulate. The event cooldown is a repeat guard, separate from ability cooldowns. New gameplay event types also need a detector/test-action branch in `prototype-01.js`.
 
-The Test bench’s Ability timings section shows configured effect, cooldown and total wait for each ability.
+The player module is permanently anchored bottom left. The caller appears above it and text unfolds to the right in 330 ms; subsequent lines fade in over 100 ms. Exit lasts 120 ms. Reduced motion uses short fades. Reset cancels animations and the exit cleanup callback, empties the queue and restores the player module.
 
-Original radio portraits live in `shared.icons.npcPortrait` / `playerPortrait`: a 32-unit stepped silhouette in four greens. Scanlines are applied only to portraits in CSS; text is not distorted.
+Original radio portraits live in `shared.icons.npcPortrait` / `playerPortrait`. For another caller add an icon, then add `shared.characters: {mara:{name:'Mara',icon:'maraPortrait'}}` and use `who:'mara'` in a line. Scanlines affect portraits, not text.
