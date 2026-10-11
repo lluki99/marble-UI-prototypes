@@ -110,3 +110,8 @@ Each Space press advances one line; Space after the last closes the conversation
 The player module is permanently anchored bottom left. The caller appears above it and text unfolds to the right in 330 ms; subsequent lines fade in over 100 ms. Exit lasts 120 ms. Reduced motion uses short fades. Reset cancels animations and the exit cleanup callback, empties the queue and restores the player module.
 
 Original radio portraits live in `shared.icons.npcPortrait` / `playerPortrait`. For another caller add an icon, then add `shared.characters: {mara:{name:'Mara',icon:'maraPortrait'}}` and use `who:'mara'` in a line. Scanlines affect portraits, not text.
+
+## Live ability timing
+Open **Show test bench → Ability timing**. Each ability has an effect/jump duration and cooldown, both in seconds (0.1–60). The total updates immediately. Valid changes are captured on the next activation; active effects and cooldown rings retain their original settings. Reset clears effects and the camera but keeps edited timings for another run; reloading restores configuration defaults.
+
+The race is 6,000 world units long over 60 seconds (`shared.race.length` and `duration`). Racer names A–F live in `shared.race.names`. `camera-model.js` controls smooth follow and the wide/close framing transitions. The minimap always uses world progress, independently of camera zoom.

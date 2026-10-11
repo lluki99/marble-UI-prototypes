@@ -4,13 +4,13 @@ window.MARBLE_CONFIG = {
   shared: {
     theme: {ink:'#121821', paper:'#eee3c6', sage:'#526f69', sea:'#17394b', gold:'#ffd348', rust:'#bd3449', muted:'#665e50', white:'#fff6da'},
     text: {
-      raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timings', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {number}', playerMarble:'You · marble {number}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
+      raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timing', timingDuration:'Effect duration (s)', jumpDuration:'Jump duration (s)', timingCooldown:'Cooldown (s)', timingTotal:'{total} s between activations', timingHint:'Changes apply on the next activation. Enter 0.1–60 seconds.', timingError:'Enter a number from 0.1 to 60 seconds.', dialogueTriggers:'Dialogue trigger events', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {name}', playerMarble:'You · marble {name}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
       brand: 'M.A.R.B.L.E.', home: 'M.A.R.B.L.E. home', hubTitle: 'M.A.R.B.L.E. · Prototypes',
       hubIntro: 'A collection of UI prototypes.', hubHeading: 'Select a prototype.',
       hubFooter: 'M.A.R.B.L.E. prototypes', hubFuture: 'These prototypes are currently under development.',
-      back: 'All prototypes', backLabel: 'Back to prototypes', play: 'Test the UI',
+      back: '← All prototypes', backLabel: 'Back to prototypes', play: 'Test the UI',
       restart: 'Reset', restartButton: '↺ Restart demo', controls: 'Demo controls',
-      scene: 'Six numbered marbles racing downward through a desert speedway', raceProgress: 'Race progress',
+      scene: 'Six lettered marbles racing downward through a desert speedway', raceProgress: 'Race progress',
       distance: 'Distance to finish', minimap: 'Minimap', toggleMap: 'Toggle minimap',
       toggleMapHelp: 'Toggle minimap (M)', expandMap: 'Expand minimap',
       route: 'Open road from start to finish with six racers',
@@ -48,12 +48,12 @@ window.MARBLE_CONFIG = {
       playerPortrait: {viewBox:'0 0 32 32', markup:'<path fill="#173c2c" d="M0 0H32V32H0Z"/><path fill="#4a8e5b" d="M3 32V27H9V24H23V27H29V32Z"/><path fill="#91c787" d="M9 10H23V19H20V23H12V20H9Z"/><path fill="#285b3b" d="M7 15V8H10V5H15V2H19V6H24V9H26V15H21V11H17V9H13V13H9ZM11 16H14V18H11ZM19 16H22V18H19Z"/><path fill="#bce2a2" d="M8 24H12V27H20V24H25V29H9ZM14 21H19V22H14Z"/>'}
     },
     abilityDefaults: [
-      {id:'impulse', name:'Impulse', icon:'impulse', key:'Shift', duration:3, cooldown:10, description:'Leave a golden acceleration trail behind your marble for three seconds.'},
+      {id:'impulse', name:'Impulse', icon:'impulse', key:'Shift', duration:3, cooldown:10, description:'Leave a golden acceleration trail behind your marble for the configured duration.'},
       {id:'jump', name:'Jump', icon:'jump', key:'E', duration:1, cooldown:8, description:'Hop once and land back on the trail. Your shadow stays on the ground.'},
-      {id:'ghost', name:'Ghost', icon:'ghost', key:'Q', duration:3, cooldown:12, fadeSeconds:.4, minOpacity:.18, description:'Fade softly for three seconds. A small golden ground marker keeps you in sight.'}
+      {id:'ghost', name:'Ghost', icon:'ghost', key:'Q', duration:3, cooldown:12, fadeSeconds:.4, minOpacity:.18, description:'Fade softly for the configured duration. A small golden ground marker keeps you in sight.'}
     ],
     assets: {landscape:'speedway.svg'},
-    race: {duration:60, length:1400, initialPosition:3, colorNames:['Teal','Crimson','Gold','Lime','Violet','Ivory'], colors:['#27b6ad','#e84962','#ffd348','#a4d94c','#b186e4','#fff1d0']},
+    race: {duration:60, length:6000, names:['A','B','C','D','E','F'], initialPosition:3, colorNames:['Teal','Crimson','Gold','Lime','Violet','Ivory'], colors:['#27b6ad','#e84962','#ffd348','#a4d94c','#b186e4','#fff1d0']},
     map: {path:'M112 28L133 48Q151 78 114 104Q83 127 114 149Q148 180 102 198Q50 218 66 242L94 242', start:{x:112,y:28}, finish:{x:94,y:242}},
     events: {
       second:{label:'Reach second place',cooldown:8,lines:[{who:'npc',text:'Second place! Keep that line.'},{who:'player',text:'One more marble ahead.'}]},
