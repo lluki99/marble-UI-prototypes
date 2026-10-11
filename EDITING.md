@@ -15,11 +15,11 @@ For Saltwind Run only, add that key under `prototypes['prototype-01'].text`:
 ```js
 text: {
   pageTitle: 'Saltwind Run · Marble trails',
-  next: 'Keep going ›'
+  startRace: 'Start the run'
 },
 ```
 
-The override wins over the shared value. Keep page text in English. Text containing `{seconds}`, `{name}`, etc. uses automatic placeholders; preserve these if you still want their values displayed. Change speaker names under `shared.text.npc` and `shared.text.you`. Conversation lines are under `shared.dialogue`; a prototype can provide its own `dialogue` array.
+The override wins over the shared value. Keep page text in English. Text containing `{seconds}`, `{name}`, etc. uses automatic placeholders; preserve these if you still want their values displayed. Change speaker names under `shared.text.npc` and `shared.text.you`. Conversation lines are under `shared.events[eventId].lines`; per-prototype `events` override shared event definitions.
 
 ## Replace an icon
 
@@ -50,7 +50,7 @@ abilityOverrides: {
 },
 ```
 
-Both values are seconds. **Cooldown begins at activation**, not when the effect ends. Keep duration greater than zero and no longer than cooldown. The tile stays gold while its effect is active, with a small active dot and the remaining cooldown number. After the effect, the tile dims and the countdown continues. Activation remains blocked until it reaches zero.
+Both values are seconds. **Cooldown begins at activation**, not when the effect ends. Keep duration greater than zero and no longer than cooldown. The circle stays gold and its separate rim spins while the effect is active. After the effect, the circle dims and the outer progress ring continues. Activation remains blocked until it reaches zero.
 
 Current settings:
 
@@ -64,7 +64,7 @@ Jump's `duration` is the total ascent/descent time; there is no loop. Ghost has 
 
 ## Artwork and basic race parameters
 
-`shared.assets.landscape` supplies both scene and hub artwork. `shared.race.duration` sets total travel time; `initialPosition` sets the starting rank. The six colors define the six racers; the third is the player. Basic UI colors are in `shared.theme`; per-prototype `theme` entries override them. `styles.css` holds layout and fallback colors.
+`shared.assets.landscape` supplies both scene and hub artwork. `shared.race.duration` sets the simulation time limit (60 seconds); `length` sets the trail length (1400 metres). Starting rank comes from the initial staggered grid. The six colors define the six racers; the third is the player. Basic UI colors are in `shared.theme`; per-prototype `theme` entries override them. `styles.css` holds layout and fallback colors.
 
 `shared.map.path` is an open SVG path with start at its first point and finish at its last point. The `start` and `finish` coordinates place the symbols. The current route runs from y=28 at the top to y=242 at the bottom. Marker positions are calculated from traveled distance along that path; 0% is the start and 100% the finish.
 
@@ -85,3 +85,41 @@ Jump's `duration` is the total ascent/descent time; there is no loop. Ghost has 
 ```
 
 The hub automatically lists every registered prototype. Each HTML has its own direct URL; the shared renderer and content binder work with its selected overrides. No previous prototype needs to be overwritten.
+
+
+## Marble properties and radio events
+
+Edit `shared.properties` for input ranges/help, `shared.presets` for values, and `shared.marbles` for the six preset assignments. The third marble is the player. Per-prototype `properties`, `presets`, `marbles` and `events` can differ.
+
+| Property | Range | Meaning |
+| --- | --- | --- |
+| speed | 12–28 | Gameplay target forward speed in m/s, before drag |
+| friction | 0–2 | Physical drag strength; reduces motion |
+| weight | 0.5–4 | Relative mass/inertia; changes acceleration and collision response |
+| bounciness | 0–1 | Restitution; 0 absorbs relative contact speed, 1 rebounds |
+
+```js
+presets: {
+  Balanced: {speed: 22, friction: .5, weight: 1.4, bounciness: .5},
+  // Add another preset here; it automatically appears in the editor.
+},
+```
+
+Before starting, expand a marble in the Test bench and choose a preset or edit its four numeric fields. Help and ranges appear beneath each field. Select radio events, then start. Reopen the bench during the race to trigger enabled events. Reach second place changes forward distance; collision brings a rival alongside with lateral closing velocity. Contact detection then starts the same radio event used for natural impacts. Hide the bench to evaluate the game HUD.
+
+```js
+events: {
+  collision: {
+    label: 'Collide with the player', cooldown: 6,
+    lines: [
+      {who: 'npc', text: 'Steady now.', duration: 3},
+      {who: 'player', text: 'Still rolling.'}
+    ]
+  }
+},
+dialogueLineDuration: 3,
+```
+
+The event cooldown is a repeat guard, separate from ability cooldowns. An event cannot queue again while its conversation is current or pending. `duration` on a line overrides `dialogueLineDuration`. Definitions and copy belong here; genuinely new gameplay event types also need a detection/forced-action branch in `prototype-01.js`.
+
+Original radio portraits live in `shared.icons.npcPortrait` / `playerPortrait`: a 32-unit stepped silhouette in four greens. Scanlines are applied only to portraits in CSS; text is not distorted.

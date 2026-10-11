@@ -4,6 +4,7 @@ window.MARBLE_CONFIG = {
   shared: {
     theme: {ink:'#344d43', paper:'#f7f0db', sage:'#668879', sea:'#8db4aa', gold:'#edc567', rust:'#ae563c', muted:'#596958', white:'#fff9e8'},
     text: {
+      preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {number}', playerMarble:'You · marble {number}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Edit each marble before starting. The run ends by time, ranked by distance.', preset:'Preset', custom:'Custom', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
       brand: 'M.A.R.B.L.E.', home: 'M.A.R.B.L.E. home', hubTitle: 'M.A.R.B.L.E. · Prototypes',
       hubIntro: 'A collection of UI prototypes.', hubHeading: 'Select a prototype.',
       hubFooter: 'M.A.R.B.L.E. prototypes', hubFuture: 'These prototypes are currently under development.',
@@ -20,11 +21,11 @@ window.MARBLE_CONFIG = {
       inspect: 'Inspect ability', activated: '{name} activated',
       timing: '{duration} s effect · {cooldown} s from activation',
       activeDetail: 'Effect active · {seconds} s until ready', finishedState: 'Race finished',
-      finishIntro: 'That’s the trail.', finishTitle: 'Finish!', finishRestart: 'Ride again',
+      finishIntro: 'Time is up.', finishTitle: 'Run complete', finishRestart: 'Ride again',
       simulation: 'Simulation controls', tryMoment: 'Try a moment', pause: 'Pause race', resume: 'Resume race',
       radio: 'Radio call', forceCooldown: 'All on cooldown', allReady: 'All ready',
       changePosition: 'Change position', nearFinish: 'Near the finish',
-      keyboard: 'Shift / E / Q: activate · M: map · Space: next line · Esc: close',
+      keyboard: 'Shift / E / Q: activate · M: map · Esc: close',
       closeMap: 'Close expanded map', mapHeading: 'The coastal trail', otherRacers: 'Other racers',
       start: 'Start ○', finish: 'Finish ⚑', counter: '{current} / {total}',
       inspectName: '{name}: {state}. {inspect}', iconHelp: '{name} · {key} · Inspect',
@@ -43,8 +44,8 @@ window.MARBLE_CONFIG = {
       expand: {viewBox:'0 0 32 32', markup:'<path d="M5 14V5H14M18 27H27V18M5 5L12 12M27 27L20 20"/>'},
       arrow: {viewBox:'0 0 32 32', markup:'<path d="M6 16H26M18 8L26 16L18 24"/>'},
       brand: {viewBox:'0 0 40 40', markup:'<circle cx="20" cy="20" r="15"/><path d="M9 28Q30 28 30 10M8 16Q20 13 27 27"/>'},
-      npcPortrait: {viewBox:'0 0 90 90', markup:'<path fill="#66877a" d="M8 90V70L31 57H59L82 70V90Z"/><path fill="#d99a74" d="M29 21L45 17L63 26L59 53L47 64L32 53Z"/><path fill="#594b3c" d="M24 29L31 12L57 10L68 28L59 40L55 23L29 38Z"/><path fill="#f4d77a" d="M25 27L28 17L60 17L68 28Z"/><path stroke="#554a3d" stroke-width="3" d="M36 40H40M50 40H54M40 52L49 53"/>'},
-      playerPortrait: {viewBox:'0 0 90 90', markup:'<path fill="#be6448" d="M9 90V71L32 57H58L81 71V90Z"/><path fill="#ecc398" d="M29 24L46 19L62 27L59 53L45 65L31 53Z"/><path fill="#9b4b36" d="M24 36L25 20L35 11L58 14L66 29L57 34L49 25L31 36Z"/><path fill="#83b8a8" d="M26 61L43 72L64 60L65 76L43 83L27 75Z"/><path stroke="#554a3d" stroke-width="3" d="M35 42H39M50 42H54M40 54H49"/>'}
+      npcPortrait: {viewBox:'0 0 32 32', markup:'<path fill="#173c2c" d="M0 0H32V32H0Z"/><path fill="#4a8e5b" d="M3 32V26H8V23H24V26H29V32Z"/><path fill="#91c787" d="M10 9H23V19H20V23H13V20H10Z"/><path fill="#285b3b" d="M7 13V7H10V4H22V7H26V13H21V10H11V13ZM11 15H15V17H11ZM19 15H23V17H19Z"/><path fill="#bce2a2" d="M8 8H25V10H8ZM14 20H19V21H14Z"/>'},
+      playerPortrait: {viewBox:'0 0 32 32', markup:'<path fill="#173c2c" d="M0 0H32V32H0Z"/><path fill="#4a8e5b" d="M3 32V27H9V24H23V27H29V32Z"/><path fill="#91c787" d="M9 10H23V19H20V23H12V20H9Z"/><path fill="#285b3b" d="M7 15V8H10V5H15V2H19V6H24V9H26V15H21V11H17V9H13V13H9ZM11 16H14V18H11ZM19 16H22V18H19Z"/><path fill="#bce2a2" d="M8 24H12V27H20V24H25V29H9ZM14 21H19V22H14Z"/>'}
     },
     abilityDefaults: [
       {id:'impulse', name:'Impulse', icon:'impulse', key:'Shift', duration:3, cooldown:10, description:'Leave a golden acceleration trail behind your marble for three seconds.'},
@@ -52,14 +53,27 @@ window.MARBLE_CONFIG = {
       {id:'ghost', name:'Ghost', icon:'ghost', key:'Q', duration:3, cooldown:12, fadeSeconds:.4, minOpacity:.18, description:'Fade softly for three seconds. A small golden ground marker keeps you in sight.'}
     ],
     assets: {landscape:'coast.svg'},
-    race: {duration:75, initialPosition:3, colors:['#447d72','#b8664d','#eabf58','#7c8d60','#8a7595','#ede5cc']},
+    race: {duration:60, length:1400, initialPosition:3, colors:['#447d72','#b8664d','#eabf58','#7c8d60','#8a7595','#ede5cc']},
     map: {path:'M112 28L133 48Q151 78 114 104Q83 127 114 149Q148 180 102 198Q50 218 66 242L94 242', start:{x:112,y:28}, finish:{x:94,y:242}},
-    dialogue: [
-      {who:'npc', text:'There you are! Keep an eye on that bend by the shore.'},
-      {who:'player', text:'Got it, Vega. A little impulse should see me through.'},
-      {who:'npc', text:'Check the trail if you lose your bearings. You’re the little golden dot.'},
-      {who:'player', text:'All clear. See you at the finish!'}
-    ]
+    properties: {
+      speed:{min:12,max:28,step:1,description:'Target forward speed (m/s); a gameplay setting.'},
+      friction:{min:0,max:2,step:.1,description:'Drag strength; higher values slow movement.'},
+      weight:{min:.5,max:4,step:.1,description:'Mass; higher values accelerate more slowly and resist collision impulses.'},
+      bounciness:{min:0,max:1,step:.1,description:'Restitution; higher values rebound more strongly.'}
+    },
+    presets: {
+      Balanced:{speed:22,friction:.5,weight:1.4,bounciness:.5},
+      Swift:{speed:26,friction:.2,weight:.7,bounciness:.8},
+      Heavy:{speed:22,friction:.5,weight:3.5,bounciness:.2},
+      Grippy:{speed:22,friction:1.8,weight:1.2,bounciness:.1}
+    },
+    marbles:['Swift','Heavy','Balanced','Grippy','Balanced','Swift'],
+    events: {
+      second:{label:'Reach second place',cooldown:8,lines:[{who:'npc',text:'Second place! Keep that line.'},{who:'player',text:'One more marble ahead.'}]},
+      collision:{label:'Collide with the player',cooldown:6,lines:[{who:'npc',text:'A bump from the side. Steady now.'},{who:'player',text:'Still rolling, Vega.'}]}
+    },
+    dialogueLineDuration:3
+
   },
   // Each independent HTML selects one entry using data-prototype on <body>.
   prototypes: {
@@ -70,7 +84,7 @@ window.MARBLE_CONFIG = {
       abilityOverrides:{}, assets:{}, icons:{}, iconRoles:{}, race:{}, map:{}, theme:{}
       // Override any shared text by adding its key above.
       // Override one ability: abilityOverrides:{impulse:{duration:4,cooldown:11}}
-      // Optional full dialogue replacement: dialogue:[{who:'npc',text:'Hello, racer!'}]
+      // Optional event replacement: events:{collision:{label:'Collision',cooldown:6,lines:[{who:'npc',text:'Steady!'}]}}
     }
   }
 };

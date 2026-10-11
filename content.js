@@ -6,6 +6,7 @@
     text:{...source.shared.text,...variant.text},icons:{...source.shared.icons,...variant.icons},
     iconRoles:{...source.shared.iconRoles,...variant.iconRoles},
     assets:{...source.shared.assets,...variant.assets},race:{...source.shared.race,...variant.race},
+    properties:{...source.shared.properties,...variant.properties}, presets:{...source.shared.presets,...variant.presets}, events:{...source.shared.events,...variant.events},
     theme:{...source.shared.theme,...variant.theme},
     map:{...source.shared.map,...variant.map},
     abilities:source.shared.abilityDefaults.map(a=>({...a,...variant.abilityOverrides?.[a.id]}))};

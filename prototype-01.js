@@ -3,8 +3,11 @@ const $ = id => document.getElementById(id);
 const {config,text,iconMarkup}=window.MarbleContent;
 const model=window.MarbleAbilities;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const abilities=config.abilities,conversation=config.dialogue,colors=config.race.colors;
+const abilities=config.abilities,colors=config.race.colors;
 const effectIndex=id=>abilities.findIndex(a=>a.id===id);
+const physics=window.MarbleRace;
+let properties=config.marbles.map(name=>({...config.presets[name]}));
+let race=physics.create(config.race,properties),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(),enabled=new Set(Object.keys(config.events));
 let elapsed=0, paused=false, dialogIndex=0, selected=null, position=config.race.initialPosition, feedbackUntil=0, restoreDialogue=false;
 let states=abilities.map(()=>model.idle());
 const abilityButtons=[...document.querySelectorAll('[data-ability]')];
@@ -22,21 +25,21 @@ for(let i=0;i<6;i++){
   $('map-markers').append(dot);
 }
 $('map-markers').append($('map-markers').querySelector('[data-racer="2"]'));
-function showDialog(){if(selected!==null)closeAbility();dialogIndex=0;$('dialogue').hidden=false;renderDialog();}
-function renderDialog(){
-  const line=conversation[dialogIndex];
-  $('dialog-text').textContent=line.text;
-  $('speaker').textContent=text(line.who==='npc'?'npc':'you');
-  $('portrait-npc').classList.toggle('active',line.who==='npc');
-  $('portrait-player').classList.toggle('active',line.who==='player');
-  $('dialog-step').textContent=text('counter',{current:dialogIndex+1,total:conversation.length});
-  $('dialog-next').textContent=text(dialogIndex===conversation.length-1?'done':'next');
+function clearRadio(){radio=window.MarbleRadio.create();$('dialogue').hidden=true;restoreDialogue=false;}
+function event(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleRadio.enqueue(radio,id,config.events[id],elapsed,config.dialogueLineDuration);tickRadio();}
+function tickRadio(){
+ const current=window.MarbleRadio.tick(radio,elapsed,config.dialogueLineDuration);
+ if(!current){$('dialogue').hidden=true;return;}
+ const line=current.lines[current.index];restoreDialogue=selected!==null&&matchMedia('(max-width:680px)').matches;$('dialogue').hidden=restoreDialogue;
+ $('dialog-text').textContent=line.text;$('speaker').textContent=text(line.who==='npc'?'npc':'you');
+ $('portrait-npc').classList.toggle('active',line.who==='npc');$('portrait-player').classList.toggle('active',line.who==='player');
+ $('dialog-step').textContent=text('counter',{current:current.index+1,total:current.lines.length});
 }
-function nextDialog(){if(dialogIndex<conversation.length-1){dialogIndex++;renderDialog();}else $('dialogue').hidden=true;}
+function detect(hits){position=physics.ranking(race).findIndex(b=>b.id===2)+1;if(position===2&&previousRank!==2)event('second');previousRank=position;if(hits.some(pair=>pair.includes(2)))event('collision');}
 function consultAbility(i){selected=i;if(matchMedia('(max-width:680px)').matches&&!$('dialogue').hidden){restoreDialogue=true;$('dialogue').hidden=true;}$('ability-detail').hidden=false;abilityButtons.forEach((b,j)=>b.classList.toggle('selected',j===i));renderAbilities();}
 function closeAbility(){const previousSelection=selected;selected=null;$('ability-detail').hidden=true;abilityButtons.forEach(b=>b.classList.remove('selected'));if(restoreDialogue){$('dialogue').hidden=false;restoreDialogue=false;}if(previousSelection!==null)abilityButtons[previousSelection].focus();}
 function activate(i){
-  if(elapsed>=raceDuration)return;
+  if(phase!=='running')return;
   const next=model.activate(states[i],abilities[i],elapsed);if(!next)return;
   states[i]=next;
   $('ability-feedback').textContent=text('activated',{name:abilities[i].name});feedbackUntil=elapsed+1.8;
@@ -46,19 +49,20 @@ function renderAbilities(){
   abilityButtons.forEach((button,i)=>{
     const {active,remaining}=model.status(states[i],elapsed), cooldown=!active&&remaining>0;
     button.classList.toggle('activated',active);button.classList.toggle('cooldown',cooldown);
-    const label=text(elapsed>=raceDuration?'finishedState':active?'activeCooldown':cooldown?'cooldown':'ready',{seconds:Math.ceil(remaining)});
+    const label=text(phase==='preparing'?'preparing':elapsed>=raceDuration?'finishedState':active?'activeCooldown':cooldown?'cooldown':'ready',{seconds:Math.ceil(remaining)});
     button.querySelector('.ability-state').textContent=remaining>0?`${Math.ceil(remaining)}`:'';
     button.setAttribute('aria-label',text('inspectName',{name:abilities[i].name,state:label,inspect:text('inspect')}));
     button.title=text('iconHelp',{name:abilities[i].name,key:abilities[i].key});
     button.setAttribute('aria-expanded',String(selected===i));
-    button.querySelector('.cooldown-fill').style.width=(remaining>0?100*(1-remaining/abilities[i].cooldown):0)+'%';
+    button.querySelector('.cooldown-ring circle').style.strokeDashoffset=226*(1-remaining/abilities[i].cooldown);
+    button.style.setProperty('--spin-duration',abilities[i].duration+'s');
   });
   if(selected!==null){
     const a=abilities[selected];$('ability-name').textContent=a.name;$('ability-description').textContent=a.description;
     const status=model.status(states[selected],elapsed);
     $('ability-timing').textContent=status.active?text('activeDetail',{seconds:Math.ceil(status.remaining)}):text('timing',a);
-    $('ability-activate').disabled=elapsed<states[selected].readyAt||elapsed>=raceDuration;
-    $('ability-activate').textContent=text(elapsed>=raceDuration?'finishedState':status.active?'active':status.remaining>0?'cooldown':'activate',{seconds:Math.ceil(status.remaining)});
+    $('ability-activate').disabled=elapsed<states[selected].readyAt||phase!=='running';
+    $('ability-activate').textContent=text(phase==='preparing'?'preparing':elapsed>=raceDuration?'finishedState':status.active?'active':status.remaining>0?'cooldown':'activate',{seconds:Math.ceil(status.remaining)});
   }
 }
 function toggleMap(){const open=$('map-content').hidden;$('map-content').hidden=!open;$('map-toggle').setAttribute('aria-expanded',String(open));}
@@ -74,48 +78,45 @@ function openMap(){
   const clone=$('mini-map').cloneNode(true);clone.removeAttribute('id');clone.setAttribute('aria-label',text('route'));
   clone.querySelector('#map-markers').removeAttribute('id');clone.querySelector('g').classList.add('large-markers');$('large-map').replaceChildren(clone);$('map-dialog').showModal();
 }
-function reset(){
-  elapsed=0;paused=false;position=config.race.initialPosition;states=abilities.map(()=>model.idle());feedbackUntil=0;
-  $('pause').textContent=text('pause');$('map-content').hidden=false;$('map-toggle').setAttribute('aria-expanded','true');
-  $('ability-feedback').textContent='';
-  if($('map-dialog').open)$('map-dialog').close();closeAbility();showDialog();renderAbilities();updateHUD();updateMap();drawScene();
-}
+function setBench(open){$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));$('controls-toggle').textContent=text(open?'hideTools':'showTools');}
+function reset(){race=physics.create(config.race,properties);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';if($('map-dialog').open)$('map-dialog').close();$('map-content').hidden=false;$('map-toggle').setAttribute('aria-expanded','true');$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
 const raceDuration=config.race.duration;
-function racerProgress(i){
-  const p=Math.min(1,elapsed/raceDuration);
-  if(i===2)return p;
-  const order=[0,1,3,4,5];
-  const slot=order.indexOf(i);
-  const relative=slot < position-1 ? (position-1-slot)*.07 : -(slot-position+2)*.07;
-  return Math.max(0,Math.min(1,p+relative*Math.sin(Math.PI*p)));
-}
+function racerProgress(i){return Math.max(0,Math.min(1,race.balls[i].s/race.length));}
+function finishRace(){phase='finished';states=abilities.map(()=>model.idle());clearRadio();closeAbility();$('result').textContent=text('result',{rank:position,count:colors.length,progress:Math.floor(racerProgress(2)*100)});}
 function updateHUD(){
   $('position').textContent=position;
+  $('sim-status').textContent=text('simulationStatus',{phase:text(phase),time:elapsed.toFixed(1)});
   const time=Math.min(elapsed,raceDuration);$('race-time').textContent=`${String(Math.floor(time/60)).padStart(2,'0')}:${(time%60).toFixed(1).padStart(4,'0')}`;
-  const progress=Math.min(100,elapsed/raceDuration*100);
+  const progress=Math.min(100,racerProgress(2)*100);
   $('progress-label').textContent=`${Math.floor(progress)}%`;
   $('race-progress').style.width=progress+'%';
   document.querySelector('.progress-track').setAttribute('aria-valuenow',Math.floor(progress));
   $('finish-banner').hidden=elapsed<raceDuration;
   $('ability-feedback').classList.toggle('visible',elapsed<feedbackUntil);
 }
-$('dialog-next').onclick=nextDialog;$('dialog-close').onclick=()=>{$('dialogue').hidden=true;};
+$('dialog-close').onclick=()=>{radio.current=null;restoreDialogue=false;tickRadio();};
 abilityButtons.forEach((b,i)=>b.onclick=()=>consultAbility(i));
 $('ability-close').onclick=closeAbility;$('ability-activate').onclick=()=>activate(selected);
 $('map-toggle').onclick=toggleMap;$('map-expand').onclick=openMap;$('map-close').onclick=()=>$('map-dialog').close();
-$('controls-toggle').onclick=()=>{const open=$('demo-controls').hidden;$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));};
+$('controls-toggle').onclick=()=>setBench($('demo-controls').hidden);
 $('pause').onclick=()=>{paused=!paused;$('pause').textContent=text(paused?'resume':'pause');};
-$('show-dialog').onclick=showDialog;
-$('force-cooldown').onclick=()=>{states=abilities.map(a=>({startedAt:null,activeUntil:0,readyAt:elapsed+a.cooldown}));renderAbilities();};
-$('ready-all').onclick=()=>{states=abilities.map(()=>model.idle());renderAbilities();};
-$('overtake').onclick=()=>{position=position===1?colors.length:position-1;updateHUD();};$('reset').onclick=reset;$('header-reset').onclick=reset;$('finish-reset').onclick=reset;$('jump-finish').onclick=()=>{elapsed=raceDuration-4;states=abilities.map(()=>model.idle());closeAbility();$('dialogue').hidden=true;$('demo-controls').hidden=true;$('controls-toggle').setAttribute('aria-expanded','false');updateHUD();updateMap();};
+$('header-reset').onclick=reset;$('finish-reset').onclick=reset;
+$('start-race').onclick=()=>{race=physics.create(config.race,properties);phase='running';previousRank=physics.ranking(race).findIndex(b=>b.id===2)+1;$('preparation').hidden=true;$('live-tools').hidden=false;setBench(false);};
+properties.forEach((p,i)=>{
+ const block=document.createElement('details');block.open=i===2;
+ const summary=document.createElement('summary');summary.textContent=text(i===2?'playerMarble':'marble',{number:i+1});block.append(summary);
+ const presetLabel=document.createElement('label');presetLabel.textContent=text('preset');const select=document.createElement('select');
+ [...Object.keys(config.presets),text('custom')].forEach(name=>{const o=document.createElement('option');o.textContent=name;select.append(o);});select.value=config.marbles[i];presetLabel.append(select);block.append(presetLabel);
+ const inputs={};Object.entries(config.properties).forEach(([key,def])=>{const label=document.createElement('label');label.textContent=key[0].toUpperCase()+key.slice(1);label.title=def.description;const input=document.createElement('input');input.type='number';input.min=def.min;input.max=def.max;input.step=def.step;input.value=p[key];input.setAttribute('aria-label',summary.textContent+' '+key);input.onchange=()=>{const value=Number(input.value);p[key]=Math.max(def.min,Math.min(def.max,Number.isFinite(value)?value:def.min));input.value=p[key];select.value=text('custom');race=physics.create(config.race,properties);};label.append(input);block.append(label);const help=document.createElement('small');help.textContent=def.min+'–'+def.max+' · '+def.description;block.append(help);inputs[key]=input;});
+ select.onchange=()=>{if(config.presets[select.value]){Object.assign(p,config.presets[select.value]);Object.keys(inputs).forEach(k=>inputs[k].value=p[k]);race=physics.create(config.race,properties);}};$('marble-editor').append(block);
+});
+Object.entries(config.events).forEach(([id,def])=>{
+ const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=true;input.onchange=()=>input.checked?enabled.add(id):enabled.delete(id);label.append(input,def.label);$('event-options').append(label);
+ const button=document.createElement('button');button.textContent=def.label;button.onclick=()=>{if(phase!=='running'||!enabled.has(id))return;if(id==='second')physics.forceSecond(race);if(id==='collision')physics.forceCollision(race);detect([]);};input.addEventListener('change',()=>button.disabled=!input.checked);$('event-triggers').append(button);
+});
 document.addEventListener('keydown',e=>{
-  if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||$('map-dialog').open)return;
-  if(e.target.closest('button,a,input,select,textarea')&&e.code==='Space')return;
-  const abilityIndex=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());
-  if(abilityIndex!==-1)activate(abilityIndex);
-  else if(e.key.toLowerCase()==='m')toggleMap();else if(e.code==='Space'&&!$('dialogue').hidden){e.preventDefault();nextDialog();}
-  else if(e.key==='Escape'){if(!$('ability-detail').hidden)closeAbility();else if(!$('demo-controls').hidden){$('demo-controls').hidden=true;$('controls-toggle').setAttribute('aria-expanded','false');$('controls-toggle').focus();}else $('dialogue').hidden=true;}
+ if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||$('map-dialog').open||e.target.closest('input,select,textarea'))return;
+ const i=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());if(i!==-1)activate(i);else if(e.key.toLowerCase()==='m')toggleMap();else if(e.key==='Escape'){if(selected!==null)closeAbility();else if(!$('demo-controls').hidden)setBench(false);}
 });
 /* Pista proyectada: curvas, barandillas y canicas originales dibujadas en Canvas. */
 const canvas=$('scene'),ctx=canvas.getContext('2d');let width=0,height=0;
@@ -132,11 +133,9 @@ function drawScene(){
   const motion=reducedMotion?0:Math.min(elapsed,raceDuration)*.055;
   for(let i=0;i<22;i++){const t=((i/22+motion)%1);const p=trackPoint(t);ctx.strokeStyle='#988c6833';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x-p.half*.8,p.y);ctx.lineTo(p.x+p.half*.8,p.y);ctx.stroke();}
   for(let i=0;i<9;i++){const t=(i/9+motion*.4)%1,p=trackPoint(t);for(const side of [-1,1]){const x=p.x+side*p.half*.99;ctx.fillStyle='#877959';ctx.fillRect(x-3, p.y-13*(t+.3),6,20*(t+.3));ctx.fillStyle='#f6efd9';ctx.fillRect(x-3,p.y-13*(t+.3),6,3);}}
-  const balls=[{l:-.25},{l:.48},{l:-.12},{l:-.5},{l:.06},{l:.5}];
-  const order=[0,1,3,4,5];
-  balls.forEach((b,i)=>{
-    const slot=order.indexOf(i);const rank=i===2?position-1:slot>=position-1?slot+1:slot;
-    const t=(.28+rank*.078+(reducedMotion?0:Math.sin(Math.min(elapsed,raceDuration)*.4+i)*.012))*(width<=680?.42:1),p=trackPoint(t),x=p.x+p.half*b.l,groundY=p.y,r=Math.max(12,width*(.009+.022*t));
+  const player=race.balls[2];
+  [...race.balls].sort((a,b)=>b.s-a.s).forEach(b=>{
+    const i=b.id,t=Math.max(.12,Math.min(.86,.56+(player.s-b.s)*.006))*(width<=680?.48:1),p=trackPoint(t),x=p.x+p.half*b.x/2.6,groundY=p.y,r=Math.max(12,width*(.009+.022*t));
     const jumpIndex=effectIndex('jump'),ghostIndex=effectIndex('ghost'),impulseIndex=effectIndex('impulse');
     const lift=i===2?model.jumpHeight(states[jumpIndex],abilities[jumpIndex],elapsed):0;
     const y=groundY-lift*r*(reducedMotion?1:2.8);
@@ -157,5 +156,5 @@ function drawScene(){
   });
 }
 let previous=performance.now(),lastUI=0;
-function frame(now){const delta=Math.min((now-previous)/1000,.1);previous=now;if(!paused&&!document.hidden)elapsed+=delta;if(now-lastUI>80){renderAbilities();updateHUD();updateMap();lastUI=now;}drawScene();requestAnimationFrame(frame);}
-new ResizeObserver(resize).observe(canvas);showDialog();renderAbilities();updateMap();requestAnimationFrame(frame);
+function frame(now){const delta=Math.min((now-previous)/1000,.1);previous=now;if(phase==='running'&&!paused&&!document.hidden){let remaining=delta;while(remaining>1e-8&&race.elapsed<raceDuration){const dt=Math.min(remaining,1/120);const hits=physics.step(race,dt,model.status(states[effectIndex('impulse')],elapsed).active);elapsed=race.elapsed;detect(hits);tickRadio();remaining-=dt;}if(elapsed>=raceDuration)finishRace();}if(now-lastUI>80){renderAbilities();updateHUD();updateMap();if(phase==='running')tickRadio();lastUI=now;}drawScene();requestAnimationFrame(frame);}
+new ResizeObserver(resize).observe(canvas);reset();requestAnimationFrame(frame);

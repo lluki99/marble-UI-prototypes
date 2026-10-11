@@ -22,20 +22,23 @@ Original coastal scenery and portraits; warm sand, sage and simple cream outline
 - Impulse: a golden acceleration trail for 3 seconds; ready 10 seconds after activation. Shift.
 - Jump: exactly one 1-second ascent and descent with a ground shadow; ready 8 seconds after activation. E.
 - Ghost: a smooth 3-second fade of the player marble, with a small golden ground marker; ready 12 seconds after activation. Q. Other racers retain normal opacity.
-- Gold tile and active dot indicate the ongoing effect; the number and strip independently show cooldown remaining. The countdown begins immediately at activation and prevents repeat activation.
-- Minimap: open road from the top start to the bottom finish, six racers, gold player marker. Progress is distance along that road. M hides/shows the map; the expanded map supports Escape and native focus containment.
-- One 75-second start-to-finish journey, with timer/progress clamped at the finish. Restart clears abilities, timers and transient feedback.
-- Demo controls: pause/resume, dialogue, forced cooldowns, ready state, position, near-finish jump and restart.
+- Circular controls: a separate rim spins only during the effect; the icon stays upright. The outer ring and seconds show cooldown. Reduced motion replaces spin with a steady rim.
+- Minimap: open road from the top start to the bottom finish. Six markers use each marble's actual distance.
+- Preparation does not consume race time. Edit all six marbles, choose presets and enabled events, then start a 60-second run. Ranking is distance-based at the time limit.
+- The separate Test bench can be hidden. Its enabled event buttons change race state or arrange an actual impact; natural and forced events share the detector and radio queue.
+- Radio lines advance automatically every 3 simulation seconds. Events queue without interruption; duplicate pending conversations and frequent repeat triggers are suppressed. Reset/end clears conversations and ability deadlines.
 
-Space advances dialogue when focus is not on a button/link. Escape closes ability details, demo controls or conversation. All pages use English. Reduced motion stops environmental movement and reduces jump height; meaningful ability states remain evaluable.
+All pages use English. Escape closes ability details or the test bench. Reset returns to preparation with the edited properties retained for repeatable comparisons.
 
 ## Simulation limits
 
-The original SVG landscape and Canvas marbles represent a moving camera on a coastal sector rather than the full map in 3D. The map, progress and ranking share simulated race data. Jump is a single timed visual arc. Impulse and Ghost do not change collisions, vulnerability, physics or ranking. Pause freezes simulation and cooldowns.
+`race-model.js` uses a fixed 1/120-second step on a two-dimensional strip: forward distance and lateral position, proportional drive toward target speed, frictional drag, mass-dependent acceleration and contact impulses with restitution. Presets affect motion and collisions; heavy marbles are not inherently faster. Impulse increases target speed while active. Jump is one visual arc; Ghost changes only opacity, not collision or invulnerability. Pause and inactive browser tabs freeze simulation time.
+
+The Canvas shows a camera-relative coastal sector, not the whole track in 3D. There is no gravity solver, rolling torque, terrain physics or airborne collision handling. Test positioning is an explicit controlled state change. Racers that reach the end stay there; the run still ends by time. This is a HUD evaluation model, not final game physics.
 
 ## Checks
 
-`node tests/ability-model.test.cjs` checks effect boundaries, activation-based cooldown deadlines, duplicate blocking, reset, one jump apex/no repeats and smooth Ghost recovery. Browser checks cover the hub, direct HTML URL, dialogue, minimap orientation/expansion, ability state transitions, restart and desktop/mobile layout.
+Run `node tests/ability-model.test.cjs`, `node tests/race-model.test.cjs` and `node tests/radio-model.test.cjs`. They cover ability boundaries/reset, exact time limit, property effects, stability, natural/forced contacts, radio timing, queuing and deduplication. Browser checks cover preparation, events, automatic lines, result at 01:00.0, ability states, minimap, restart and desktop/mobile hub navigation.
 
 ## Skills
 
