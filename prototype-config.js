@@ -4,7 +4,7 @@ window.MARBLE_CONFIG = {
   shared: {
     theme: {ink:'#121821', paper:'#eee3c6', sage:'#526f69', sea:'#17394b', gold:'#ffd348', rust:'#bd3449', muted:'#665e50', white:'#fff6da'},
     text: {
-      raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timing', timingDuration:'Effect duration (s)', jumpDuration:'Jump duration (s)', timingCooldown:'Cooldown (s)', timingTotal:'{total} s between activations', timingHint:'Changes apply on the next activation. Enter 0.1–60 seconds.', timingError:'Enter a number from 0.1 to 60 seconds.', dialogueTriggers:'Dialogue trigger events', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {name}', playerMarble:'You · marble {name}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
+      radioLink:'Radio link', raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timing', timingDuration:'Effect duration (s)', jumpDuration:'Jump duration (s)', timingCooldown:'Cooldown (s)', timingTotal:'{total} s between activations', timingHint:'Changes apply on the next activation. Enter 0.1–60 seconds.', timingError:'Enter a number from 0.1 to 60 seconds.', dialogueTriggers:'Dialogue trigger events', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {name}', playerMarble:'You · marble {name}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
       brand: 'M.A.R.B.L.E.', home: 'M.A.R.B.L.E. home', hubTitle: 'M.A.R.B.L.E. · Prototypes',
       hubIntro: 'A collection of UI prototypes.', hubHeading: 'Select a prototype.',
       hubFooter: 'M.A.R.B.L.E. prototypes', hubFuture: 'These prototypes are currently under development.',
@@ -44,8 +44,8 @@ window.MARBLE_CONFIG = {
       expand: {viewBox:'0 0 32 32', markup:'<path d="M5 14V5H14M18 27H27V18M5 5L12 12M27 27L20 20"/>'},
       arrow: {viewBox:'0 0 32 32', markup:'<path d="M6 16H26M18 8L26 16L18 24"/>'},
       brand: {viewBox:'0 0 40 40', markup:'<circle cx="20" cy="20" r="15"/><path d="M9 28Q30 28 30 10M8 16Q20 13 27 27"/>'},
-      npcPortrait: {viewBox:'0 0 32 32', markup:'<path fill="#173c2c" d="M0 0H32V32H0Z"/><path fill="#4a8e5b" d="M3 32V26H8V23H24V26H29V32Z"/><path fill="#91c787" d="M10 9H23V19H20V23H13V20H10Z"/><path fill="#285b3b" d="M7 13V7H10V4H22V7H26V13H21V10H11V13ZM11 15H15V17H11ZM19 15H23V17H19Z"/><path fill="#bce2a2" d="M8 8H25V10H8ZM14 20H19V21H14Z"/>'},
-      playerPortrait: {viewBox:'0 0 32 32', markup:'<path fill="#173c2c" d="M0 0H32V32H0Z"/><path fill="#4a8e5b" d="M3 32V27H9V24H23V27H29V32Z"/><path fill="#91c787" d="M9 10H23V19H20V23H12V20H9Z"/><path fill="#285b3b" d="M7 15V8H10V5H15V2H19V6H24V9H26V15H21V11H17V9H13V13H9ZM11 16H14V18H11ZM19 16H22V18H19Z"/><path fill="#bce2a2" d="M8 24H12V27H20V24H25V29H9ZM14 21H19V22H14Z"/>'}
+      npcPortrait: {src:'assets/radio-caller.png'},
+      playerPortrait: {src:'assets/radio-player.png'}
     },
     abilityDefaults: [
       {id:'impulse', name:'Impulse', icon:'impulse', key:'Shift', duration:3, cooldown:10, description:'Leave a golden acceleration trail behind your marble for the configured duration.'},

@@ -24,7 +24,7 @@ Original desert speedway and portraits; ink-blue shadows, crimson machinery, yel
 - Ghost: a smooth 3-second fade of the player marble, with a small golden ground marker; 12-second cooldown after the effect (15 seconds between uses). Q. Other racers retain normal opacity.
 - Circular controls: a separate rim spins only during the effect; the icon stays upright. After the effect ends, the high-contrast outer ring fills over the full cooldown. Reduced motion replaces spin with a steady rim.
 - Minimap: open road from the top start to the bottom finish. Six markers use each marble's actual distance.
-- Preparation does not consume race time. Choose enabled events, then start a 60-second run. Ranking is distance-based at the time limit.
+- Preparation does not consume race time. Choose enabled events, then start a 60-second run. Finishers rank by their recorded arrival time; unfinished racers rank by distance at the time limit.
 - The separate Test bench can be hidden. Its enabled event buttons change race state or arrange an actual impact; natural and forced events share the detector and radio queue.
 - Radio lines advance only with Space; another press after the last line closes the call. Events queue without interruption; duplicate pending conversations and frequent repeat triggers are suppressed. Reset clears conversations and ability deadlines; calls can still be advanced after the timed race ends.
 
@@ -34,11 +34,11 @@ All pages use English. Escape closes ability details or the test bench. Reset re
 
 `race-model.js` runs a fixed 1/120-second step with common rules for all six marbles. Temporary random rhythm and lane targets blend smoothly; contacts cause small lateral nudges and a 0.65-second slowdown. No per-marble statistics determine performance. Test triggers guide movement toward an overtake/contact rather than teleporting racers. An optional shared seed makes a session reproducible.
 
-The Canvas, minimap and ranking all use the same distance/lane state. Impulse temporarily accelerates the player; Jump is one visual arc; Ghost changes opacity only. The race stops at 60 seconds, ranked by distance; it does not force a simultaneous finish. Pause/inactive browser tabs freeze race time. This is a visual HUD simulation, not a physical game engine.
+The Canvas, minimap and ranking all use the same distance/lane state. Impulse temporarily accelerates the player; Jump is one visual arc; Ghost changes opacity only. The race stops at 60 seconds, ranked by arrival time and remaining distance; it does not force a simultaneous finish. Pause/inactive browser tabs freeze race time. This is a visual HUD simulation, not a physical game engine.
 
 ## Checks
 
-Run `node tests/ability-model.test.cjs`, `node tests/race-model.test.cjs`  , `node tests/radio-model.test.cjs` and `node tests/camera-model.test.cjs`. They cover effect-then-cooldown boundaries/reset, exact time limit, smooth motion, overtakes, stability, natural/forced contacts, Space-driven radio, queuing and deduplication. Browser checks cover preparation, events, manual lines, result at 01:00.0, ability states, minimap, restart and desktop/mobile hub navigation.
+Run `node tests/ability-model.test.cjs`, `node tests/race-model.test.cjs`  , `node tests/radio-model.test.cjs` and `node tests/camera-model.test.cjs` and `node tests/results.test.cjs`. They cover effect-then-cooldown boundaries/reset, exact time limit, smooth motion, overtakes, stability, natural/forced contacts, Space-driven radio, queuing and deduplication. Browser checks cover preparation, events, manual lines, result at 01:00.0, ability states, minimap, restart and desktop/mobile hub navigation.
 
 ## Skills
 
@@ -51,7 +51,7 @@ Racer identities are shared in `shared.race.colors` and `colorNames`; names A–
 
 ## Redline visual revision
 
-The supplied frames informed an ink-blue sky, near-black mechanical silhouettes, desert rose stone, yellow racing hardware and crimson repair panels. Heavy contour lines, condensed italic headings and cel-shaded lettered marbles replace the softer coastal treatment. Original stepped green radio portraits remain readable and quiet. Speed trails extend upward behind marbles travelling downward. Reduced motion removes speed strokes and spin.
+The supplied frames informed an ink-blue sky, near-black mechanical silhouettes, desert rose stone, yellow racing hardware and crimson repair panels. Heavy contour lines, condensed italic headings and cel-shaded lettered marbles replace the softer coastal treatment. The supplied caller/player portraits with a green screen treatment remain readable and quiet. Speed trails extend upward behind marbles travelling downward. Reduced motion removes speed strokes and spin.
 
 The header stays outside the game HUD. Both scene and minimap calculate forward position from actual distance, starting above and ending below. Ability timing is effect → full configured cooldown → ready; the separate rim spins during the effect and a thick yellow recovery ring fills during cooldown only. The Ability timing section edits effect/jump duration and cooldown (seconds), shows the total wait, validates 0.1–60 seconds and captures settings per activation. Reset keeps edits; reload restores defaults.
 
@@ -60,3 +60,9 @@ Radio opening: caller slide (140 ms), text glass reveal (90 ms delay + 190 ms), 
 ## Following camera
 
 A 6,000-unit road shows only approximately 300–400 units at once. A smooth world-space camera keeps the player toward the upper half, leaving room ahead below. Road marks, rails and angular roadside terrain scroll continuously past. Framing widens between 25–37% progress, then moves closer between 60–72%. Reduced motion keeps a fixed framing and omits speed strokes. The complete-route map is independent of camera framing.
+
+## Radio terminal and final ranking
+
+Tools now open at the right below their header buttons, with compact two-column timing fields and internal scrolling. Player and caller image resources live in `assets/radio-player.png` and `assets/radio-caller.png`; replace their icon `src` references in `prototype-config.js`. CSS adds green monochrome and scanlines without cropping. The communication terminal combines cream title bars, monospace text, turquoise hardware, a burnt-orange repair strip, speaker grille and a short signal animation per line. Activation feedback occupies one fixed slot above the abilities; the active rim turns every 0.45 seconds and stops with the effect.
+
+Previously all finishers were clamped to the same distance, so numeric ID tie-breaking always placed C third. Each racer now records its interpolated arrival time; after 60 seconds the final order is captured in `race.result` before stopping. HUD ranking and result use that same order. Regression tests cover player ranks 2, 5 and 6, identical-distance arrival ordering and a stable final snapshot.
