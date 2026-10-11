@@ -20,7 +20,7 @@
     return `<svg viewBox="${icon.viewBox||'0 0 48 48'}" aria-hidden="true">${icon.markup}</svg>`;
   };
   config.abilities.forEach(a=>{
-    if(!(a.duration>0&&a.cooldown>=a.duration))throw new Error(`Ability ${a.id}: cooldown must be at least its positive duration`);
+    if(!(a.duration>0&&a.cooldown>0))throw new Error(`Ability ${a.id}: effect duration and cooldown must both be positive`);
   });
   Object.entries(config.theme).forEach(([key,value])=>document.documentElement.style.setProperty(`--${key}`,value));
   document.querySelectorAll('[data-text]').forEach(el=>el.textContent=text(el.dataset.text));

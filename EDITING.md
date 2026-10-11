@@ -50,11 +50,11 @@ abilityOverrides: {
 },
 ```
 
-Both values are seconds. **Cooldown begins at activation**, not when the effect ends. Keep duration greater than zero and no longer than cooldown. The circle stays gold and its separate rim spins while the effect is active. After the effect, the circle dims and the outer progress ring continues. Activation remains blocked until it reaches zero.
+Both values are seconds. **Cooldown begins when the effect ends**. Total wait equals duration + cooldown, added once in `ability-model.js`. Keep both values positive. The circle stays gold and its separate rim spins while the effect is active. After the effect, the circle dims and the outer progress ring continues. Activation remains blocked until it reaches zero.
 
 Current settings:
 
-| Ability | Effect duration | Cooldown from activation | Key |
+| Ability | Effect duration | Cooldown after effect | Key |
 | --- | --- | --- | --- |
 | Impulse | 3 s | 10 s | Shift |
 | Jump | 1 s (one up/down movement) | 8 s | E |
@@ -64,7 +64,7 @@ Jump's `duration` is the total ascent/descent time; there is no loop. Ghost has 
 
 ## Artwork and basic race parameters
 
-`shared.assets.landscape` supplies both scene and hub artwork. `shared.race.duration` sets the simulation time limit (60 seconds); `length` sets the trail length (1400 metres). Starting rank comes from the initial staggered grid. The six colors define the six racers; the third is the player. Basic UI colors are in `shared.theme`; per-prototype `theme` entries override them. `styles.css` holds layout and fallback colors.
+`shared.assets.landscape` supplies both scene and hub artwork. `shared.race.duration` sets the simulation time limit (60 seconds); `length` sets the trail length (1400 metres). Starting rank comes from the initial staggered grid. The six colors define the six racers; the third is the player. Matching English color names are in `shared.race.colorNames`. Racer numbers stay stable across scene, map and editor. Basic UI colors are in `shared.theme`; per-prototype `theme` entries override them. `styles.css` holds layout and fallback colors.
 
 `shared.map.path` is an open SVG path with start at its first point and finish at its last point. The `start` and `finish` coordinates place the symbols. The current route runs from y=28 at the top to y=242 at the bottom. Marker positions are calculated from traveled distance along that path; 0% is the start and 100% the finish.
 
@@ -121,5 +121,7 @@ dialogueLineDuration: 3,
 ```
 
 The event cooldown is a repeat guard, separate from ability cooldowns. An event cannot queue again while its conversation is current or pending. `duration` on a line overrides `dialogueLineDuration`. Definitions and copy belong here; genuinely new gameplay event types also need a detection/forced-action branch in `prototype-01.js`.
+
+The Test bench’s Ability timings section shows configured effect, cooldown and total wait for each ability.
 
 Original radio portraits live in `shared.icons.npcPortrait` / `playerPortrait`: a 32-unit stepped silhouette in four greens. Scanlines are applied only to portraits in CSS; text is not distorted.

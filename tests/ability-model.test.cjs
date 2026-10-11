@@ -10,12 +10,14 @@ for(const ability of config.abilityDefaults){
   assert.equal(ability.duration,duration);assert.equal(ability.cooldown,cooldown);
   const state=model.activate(model.idle(),ability,20);
   assert.equal(state.activeUntil,20+duration);
-  assert.equal(state.readyAt,20+cooldown,'cooldown starts at activation');
+  assert.equal(state.readyAt,20+duration+cooldown,'cooldown starts after effect');
   assert.equal(model.activate(state,ability,20.2),null,'active duplicate blocked');
   assert.equal(model.status(state,20+duration-.001).active,true);
   assert.equal(model.status(state,20+duration).active,false);
-  assert.equal(model.activate(state,ability,20+cooldown-.001),null,'last instant of cooldown blocked');
-  assert.notEqual(model.activate(state,ability,20+cooldown),null,'exact cooldown boundary is ready');
+  assert.equal(model.status(state,20+duration).remaining,cooldown,'full cooldown at effect boundary');
+  assert.equal(model.status(state,20).remaining,duration+cooldown,'duration added exactly once');
+  assert.equal(model.activate(state,ability,20+duration+cooldown-.001),null,'last instant of cooldown blocked');
+  assert.notEqual(model.activate(state,ability,20+duration+cooldown),null,'exact cooldown boundary is ready');
   assert.equal(model.status(model.idle(),21).active,false,'reset has no active effect');
   assert.equal(model.status(model.idle(),21).remaining,0,'reset has no timer');
 }
