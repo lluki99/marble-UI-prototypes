@@ -8,6 +8,8 @@ Edit `garage-config.js`. All coordinates are pixels on the original **1983 × 79
 
 - `name` changes the preview sign and menu heading (for example, `name: 'Geralt Witcher'`).
 - `src` selects an independent PNG layer.
+- `interactive: false` keeps a layer visible but excludes it from navigation, hit testing, focus effects and menus (Lift).
+- `pulseScale` sets the per-object focus maximum: 1.05 for large objects, up to 1.08 for smaller objects. A shared clock keeps the scale phase continuous; the silhouette halo uses a fixed filter and a smooth opacity fade.
 - `layer` sets stacking order; larger values render in front. Lift is 3, Marble is 2.
 - `bounds: [x, y, width, height]` encloses the visible object, excluding faint stray alpha pixels. Rendering crops this region from the original layer without modifying the source file. Pixel alpha within this region determines pointer hits, so transparent holes do not intercept another object.
 - `pivot: [x, y]` sets the scale origin and exploration camera target. Navigation is sorted by the pivot's horizontal coordinate.
