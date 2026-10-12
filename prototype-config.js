@@ -21,7 +21,7 @@ window.MARBLE_CONFIG = {
       inspect: 'Inspect ability', activated: '{name} activated',
       timing: '{duration} s effect → {cooldown} s cooldown',
       activeDetail: 'Effect: {seconds} s left; cooldown follows', finishedState: 'Race finished',
-      finishIntro: 'Time is up.', finishTitle: 'Run complete', finishRestart: 'Ride again',
+      finishIntro: 'Time is up.', finishTitle: 'Race results', resultsRacer:'Marble', resultsProgress:'Progress', resultsArrival:'Arrival', resultsPending:'Not finished', resultsPlayer:'You finished {rank} / {count}', finishRestart: 'Ride again',
       simulation: 'Simulation controls', tryMoment: 'Try a moment', pause: 'Pause race', resume: 'Resume race',
       radio: 'Radio call', forceCooldown: 'All on cooldown', allReady: 'All ready',
       changePosition: 'Change position', nearFinish: 'Near the finish',

@@ -106,10 +106,16 @@ function openMap(){
   clone.querySelector('#map-markers').removeAttribute('id');clone.querySelector('g').classList.add('large-markers');$('large-map').replaceChildren(clone);$('map-dialog').showModal();
 }
 function setBench(open){$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));$('controls-toggle').textContent=text(open?'hideTools':'showTools');}
-function reset(){camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';if($('map-dialog').open)$('map-dialog').close();setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
+function reset(){document.querySelector('.race').classList.remove('results-open');camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';if($('map-dialog').open)$('map-dialog').close();setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
 const raceDuration=config.race.duration;
 function racerProgress(i){return Math.max(0,Math.min(1,race.balls[i].s/race.length));}
-function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();$('result').textContent=text('result',{rank:position,count:colors.length,progress:Math.floor(racerProgress(2)*100)});}
+function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();renderResults(final);document.querySelector('.race').classList.add('results-open');}
+function renderResults(final){
+ const marble=id=>'<span class="result-marble" style="--racer-color:'+colors[id]+'">'+racerName(id)+'</span>';
+ $('result').textContent=text('resultsPlayer',{rank:position,count:final.length});
+ $('results-podium').innerHTML=[final[1],final[0],final[2]].map(b=>'<div class="podium-place place-'+b.rank+'" aria-label="'+b.rank+' · '+racerName(b.id)+'"><span class="podium-rank">'+b.rank+'</span>'+marble(b.id)+'<strong>'+racerName(b.id)+'</strong></div>').join('');
+ $('results-ranking').innerHTML=final.map(b=>'<li'+(b.id===2?' class="player-row"':'')+'><span class="result-ident"><b>'+b.rank+'</b>'+marble(b.id)+'<strong>'+racerName(b.id)+'</strong><span>'+config.race.colorNames[b.id]+(b.id===2?' · '+text('you'):'')+'</span></span><span>'+Math.floor(b.distance/race.length*100)+'%</span><span>'+(b.finishedAt===null?text('resultsPending'):b.finishedAt.toFixed(2)+' s')+'</span></li>').join('');
+}
 function updateHUD(){
   $('position').textContent=position;
   $('sim-status').textContent=text('simulationStatus',{phase:text(phase),time:elapsed.toFixed(1)});
@@ -126,7 +132,7 @@ $('ability-close').onclick=closeAbility;$('ability-activate').onclick=()=>activa
 $('map-expand').onclick=openMap;$('map-close').onclick=()=>$('map-dialog').close();
 $('controls-toggle').onclick=()=>setBench($('demo-controls').hidden);
 $('pause').onclick=()=>{paused=!paused;$('pause').textContent=text(paused?'resume':'pause');};
-$('header-reset').onclick=reset;
+$('header-reset').onclick=reset;$('results-reset').onclick=reset;
 $('start-race').onclick=()=>{camera=cameraModel.create();race=physics.create(config.race);phase='running';previousRank=physics.ranking(race).findIndex(b=>b.id===2)+1;$('preparation').hidden=true;$('live-tools').hidden=false;setBench(false);};
 abilities.forEach(a=>{
  const group=document.createElement('fieldset'),legend=document.createElement('legend'),total=document.createElement('p');legend.textContent=a.name;group.append(legend);
@@ -178,7 +184,6 @@ function drawScene(){
     const lift=i===2?model.jumpHeight(states[jumpIndex],abilities[jumpIndex],elapsed):0;
     const y=groundY-lift*r*(reducedMotion?1:2.8);
     ctx.save();
-    if(!reducedMotion&&phase==='running'&&b.v>8){ctx.strokeStyle=colors[i]+'66';ctx.lineWidth=2;for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(x+side*r*.8,groundY-r*1.4);ctx.lineTo(x+side*r*.8,groundY-r*1.4-Math.min(38,b.v));ctx.stroke();}}
     // The shadow stays on the road and shrinks as the single hop rises.
     ctx.globalAlpha=1-lift*.45;ctx.fillStyle='#5f624744';ctx.beginPath();ctx.ellipse(x+5,groundY+r*.78,r*(1.13-lift*.25),r*.35,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
     if(i===2&&model.status(states[impulseIndex],elapsed).active){const tail=ctx.createLinearGradient(x,y,x,y-100);tail.addColorStop(0,'#e6ba5899');tail.addColorStop(1,'#e6ba5800');ctx.fillStyle=tail;ctx.beginPath();ctx.moveTo(x-r*.6,y);ctx.lineTo(x+r*.6,y);ctx.lineTo(x+15,y-100);ctx.lineTo(x-15,y-100);ctx.fill();}
