@@ -40,11 +40,11 @@
   if(wordmark){wordmark.innerHTML=iconMarkup('brand');const name=document.createElement('span');name.textContent=text('brand');wordmark.append(name);}
   const hub=document.getElementById('prototype-list');
   if(hub)Object.values(source.prototypes).forEach(p=>{
-    const card=document.createElement('article');card.className='trail-card';
+    const card=document.createElement('article');card.className='trail-card'+(p.cardClass?' '+p.cardClass:'');
     card.innerHTML='<a class="trail-art"><img><span class="trail-road" aria-hidden="true"></span><span class="trail-marble" aria-hidden="true"></span><span class="trail-stamp"></span></a><div class="trail-copy"><p class="version"></p><h2></h2><p class="card-description"></p><a class="play-link"></a></div>';
     const art=card.querySelector('.trail-art');art.href=p.file;art.setAttribute('aria-label',text('playLabel',{name:p.name}));
-    const image=art.querySelector('img');image.src=p.assets?.landscape||source.shared.assets.landscape;image.alt=text('previewLabel');
-    card.querySelector('.trail-stamp').textContent=p.number;card.querySelector('.version').textContent=text('cardVersion',{number:p.number});
+    const image=art.querySelector('img');image.src=p.assets?.landscape||source.shared.assets.landscape;image.alt=p.previewLabel||text('previewLabel');
+    card.querySelector('.trail-stamp').textContent=p.number;card.querySelector('.version').textContent=p.versionLabel||text('cardVersion',{number:p.number});
     card.querySelector('h2').textContent=p.name;card.querySelector('.card-description').textContent=p.description;
     const play=card.querySelector('.play-link');play.href=p.file;play.textContent=text('play');play.insertAdjacentHTML('beforeend',iconMarkup('arrow'));hub.append(card);
   });
