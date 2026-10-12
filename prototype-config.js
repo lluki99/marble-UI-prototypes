@@ -66,6 +66,7 @@ window.MARBLE_CONFIG = {
   prototypes: {
     'prototype-01': {
       file:'prototype-01.html', number:'01', name:'Races UI',
+      cover:'assets/races-cover.png', previewLabel:'Marbles racing on an elevated track at sunset',
       description:'UI prototype for the races interface.',
       text:{pageTitle:'Race UI · M.A.R.B.L.E.'},
       abilityOverrides:{}, assets:{}, icons:{}, iconRoles:{}, race:{}, map:{}, theme:{}
