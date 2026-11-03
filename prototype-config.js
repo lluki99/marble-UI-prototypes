@@ -2,6 +2,7 @@
    Plain JavaScript works over HTTP and when opening the HTML directly. */
 window.MARBLE_CONFIG = {
   shared: {
+    radioTiming:{minSeconds:3,maxSeconds:4,charactersForMax:100},
     theme: {ink:'#121821', paper:'#eee3c6', sage:'#526f69', sea:'#17394b', gold:'#ffd348', rust:'#bd3449', muted:'#665e50', white:'#fff6da'},
     text: {
       radioLink:'Radio link', transmissionScan:'Scanning Incoming Transmissions', faction:'Facción X', raceStart:'Start', raceFinish:'Finish', abilitySettings:'Ability timing', timingDuration:'Effect duration (s)', jumpDuration:'Jump duration (s)', timingCooldown:'Cooldown (s)', timingTotal:'{total} s between activations', timingHint:'Changes apply on the next activation. Enter 0.1–60 seconds.', timingError:'Enter a number from 0.1 to 60 seconds.', dialogueTriggers:'Dialogue trigger events', abilitySetting:'{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses', preparation:'Prepare the run', startRace:'Start 60-second race', testTools:'Test bench', hideTools:'Hide test bench', showTools:'Show test bench', enabledEvents:'Enabled radio events', marble:'Marble {name}', playerMarble:'You · marble {name}', result:'Your result: {rank} / {count} · {progress}% of the trail', prepHint:'Shared racing rules, changing rhythm. Choose the radio events and start the run.', simulationStatus:'{phase} · {time} / 60 s', preparing:'Preparation', running:'Running', finished:'Finished',
@@ -14,7 +15,7 @@ window.MARBLE_CONFIG = {
       distance: 'Distance to finish', minimap: 'Minimap', toggleMap: 'Toggle minimap',
       toggleMapHelp: 'Toggle minimap (M)', expandMap: 'Expand minimap',
       route: 'Open road from start to finish with six racers',
-      callerPortrait:'{name} radio portrait', continueRadio:'Space to continue', playerPortrait:'Player radio portrait', conversation: 'Radio conversation', closeConversation: 'Close conversation',
+      callerPortrait:'{name} radio portrait', continueRadio:'Auto advance · Space to skip', playerPortrait:'Player radio portrait', conversation: 'Radio conversation', closeConversation: 'Close conversation',
       next: 'Next ›', done: 'Done', you: 'You', npc: 'Captain Perry', abilities: 'Abilities',
       closeAbility: 'Close ability details', activate: 'Activate', active: 'Active', ready: 'Ready',
       cooldown: 'Cooldown {seconds} s', activeCooldown: 'Active {seconds} s',
@@ -25,7 +26,7 @@ window.MARBLE_CONFIG = {
       simulation: 'Simulation controls', tryMoment: 'Try a moment', pause: 'Pause race', resume: 'Resume race',
       radio: 'Radio call', forceCooldown: 'All on cooldown', allReady: 'All ready',
       changePosition: 'Change position', nearFinish: 'Near the finish',
-      keyboard: 'Space: continue radio · Shift / E / Q: activate · M: map',
+      keyboard: 'Space: skip radio · Shift / E / Q: activate · M: map',
       closeMap: 'Close expanded map', mapHeading: 'The speedway', otherRacers: 'Other racers',
       start: 'Start ○', finish: 'Finish ⚑', counter: '{current} / {total}',
       inspectName: '{name}: {state}. {inspect}', iconHelp: '{name} · {key} · Inspect',

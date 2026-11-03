@@ -9,7 +9,7 @@ const physics=window.MarbleRace;
 const cameraModel=window.MarbleCamera;let camera=cameraModel.create();
 const racerName=i=>config.race.names[i];
 const effectiveAbility=i=>elapsed<states[i].readyAt?(states[i].settings||abilities[i]):abilities[i];
-let race=physics.create(config.race),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(),enabled=new Set(Object.keys(config.events));
+let race=physics.create(config.race),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(config.radioTiming),enabled=new Set(Object.keys(config.events));
 let elapsed=0, paused=false, selected=null, position=config.race.initialPosition, feedbackUntil=0;
 let states=abilities.map(()=>model.idle());
 const abilityButtons=[...document.querySelectorAll('[data-ability]')];
@@ -31,9 +31,9 @@ function setRadioMarble(id,index){const sphere=$(id),pattern=id==='player-radio-
 for(let n=0;n<96;n++){const square=document.createElement('i');square.style.setProperty('--scan-delay',-(n*73%1700)+'ms');square.style.setProperty('--scan-period',(900+n*47%1300)+'ms');$('scan-matrix').append(square);}
 let renderedConversation=null,renderedLine=-1,radioExitTimer=null;
 function cancelRadioAnimations(){clearTimeout(radioExitTimer);radioExitTimer=null;document.querySelectorAll('.radio-dock,.radio-dock *').forEach(el=>el.getAnimations().filter(a=>!a.animationName).forEach(a=>a.cancel()));}
-function clearRadio(){radioSpaceHeld=false;cancelRadioAnimations();radio=window.MarbleRadio.create();renderedConversation=null;renderedLine=-1;$('dialogue').hidden=true;$('portrait-npc').hidden=true;$('radio-dock').classList.remove('transmitting');$('portrait-player').classList.add('active');}
+function clearRadio(){radioSpaceHeld=false;cancelRadioAnimations();radio=window.MarbleRadio.create(config.radioTiming);renderedConversation=null;renderedLine=-1;$('dialogue').hidden=true;$('portrait-npc').hidden=true;$('radio-dock').classList.remove('transmitting');$('portrait-player').classList.add('active');}
 function event(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleRadio.enqueue(radio,id,config.events[id],elapsed);tickRadio();}
-function tickRadio(){const current=window.MarbleRadio.tick(radio);
+function tickRadio(){const current=window.MarbleRadio.tick(radio,elapsed);
 if(!current){if(renderedConversation){cancelRadioAnimations();$('radio-dock').classList.remove('transmitting');$('dialogue').animate([{opacity:1},{opacity:0,transform:'translateX(-8px)'}],{duration:reducedMotion?80:120});$('portrait-npc').animate([{opacity:1},{opacity:0}],{duration:100});radioExitTimer=setTimeout(()=>{$('dialogue').hidden=true;$('portrait-npc').hidden=true;},120);}renderedConversation=null;renderedLine=-1;return;}
 if(current===renderedConversation&&current.index===renderedLine)return;const opening=current!==renderedConversation;cancelRadioAnimations();$('dialogue').hidden=false;$('portrait-npc').hidden=false;$('radio-dock').classList.add('transmitting');const line=current.lines[current.index],actor=config.characters?.[line.who],caller=config.characters?.[current.lines.find(l=>l.who!=='player')?.who]||config.characters.npc;$('dialog-text').textContent=line.text;$('speaker').textContent=actor?.name||text(line.who==='player'?'you':'npc');$('portrait-npc').setAttribute('aria-label',text('callerPortrait',{name:caller.name}));$('portrait-npc').querySelector('.portrait-art').innerHTML=iconMarkup(caller.icon||'npcPortrait');$('portrait-npc').classList.toggle('active',line.who!=='player');$('portrait-player').classList.toggle('active',line.who==='player');setRadioMarble('player-radio-marble',config.characters.player.marbleIndex);setRadioMarble('caller-radio-marble',caller.marbleIndex??0);$('dialog-step').textContent=text('counter',{current:current.index+1,total:current.lines.length});
 if(opening){
@@ -152,7 +152,7 @@ document.addEventListener('keydown',e=>{
 const editing=e.target.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"])');
 if(e.code==='Space'&&radioSpaceHeld&&!editing){e.preventDefault();return;}
 const action=window.MarbleRadio.spaceAction({space:e.code==='Space',open:!!radio.current,editing:!!editing,blocked:$('map-dialog').open,repeat:e.repeat});
-if(action){e.preventDefault();radioSpaceHeld=true;if(action==='advance'){window.MarbleRadio.advance(radio);tickRadio();}return;}
+if(action){e.preventDefault();radioSpaceHeld=true;if(action==='advance'){window.MarbleRadio.advance(radio,elapsed);tickRadio();}return;}
 if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||$('map-dialog').open||editing)return;
 const i=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());if(i!==-1)activate(i);else if(e.key.toLowerCase()==='m'){e.preventDefault();toggleMap();}else if(e.key==='Escape'){if(selected!==null)closeAbility();else if(!$('demo-controls').hidden)setBench(false);}
 });
