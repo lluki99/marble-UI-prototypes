@@ -76,6 +76,7 @@ window.MARBLE_CONFIG = {
       // Optional event replacement: events:{collision:{label:'Collision',cooldown:6,lines:[{who:'npc',text:'Steady!'}]}}
     },
     'prototype-03': {file:'prototype-03.html',number:'03',name:'Racers UI II',cover:'assets/races-cover.png',previewLabel:'Marble racing at sunset',versionLabel:'Race interface · Iteration 02',description:'Eight racers, live standings and a new corner HUD layout.'},
+    'prototype-04': {file:'prototype-04.html',number:'04',name:'Racers UI III',cover:'assets/races-cover.png',previewLabel:'Marble racing at sunset',versionLabel:'Race interface · Iteration 03',description:'A floating, translucent minimap with a thicker route outline.'},
     'prototype-02': {file:'prototype-02.html',number:'02',name:'Garage UI',previewLabel:'An illustrated spacecraft garage',versionLabel:'Garage interface · Prototype 02',description:'Explore the garage and preview its interactive objects.',assets:{landscape:'assets/garage/Environment.png'},cardClass:'garage-card'}
   }
 };

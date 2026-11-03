@@ -1,0 +1,5 @@
+/* Only the docked minimap presentation changes in iteration III. */
+.race-v3-page .map-dock .map-content{background:transparent;border-color:transparent;box-shadow:none;filter:none}
+.race-v3-page #mini-map .map-route{stroke:#f1c817;stroke-width:16;stroke-opacity:.62;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.race-v3-page .map-content #map-expand{background:transparent}
+.race-v3-page .map-content #map-expand:hover{background:#f1c81718}
