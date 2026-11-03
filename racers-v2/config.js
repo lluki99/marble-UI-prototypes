@@ -1,7 +1,7 @@
-/* Current iteration 2: editable HUD, characters, one-shot reactions and gameplay settings. */
+/* Editable iteration 2: one-shot reactions, portrait assets, HUD and gameplay. */
 window.MARBLE_CONFIG = {
   "shared": {
-    "radioTiming": {
+    "reactionTiming": {
       "minSeconds": 3,
       "maxSeconds": 4,
       "charactersForMax": 100
@@ -18,7 +18,6 @@ window.MARBLE_CONFIG = {
     },
     "text": {
       "radioLink": "Radio link",
-      "transmissionScan": "Scanning Incoming Transmissions",
       "faction": "People's M.A.R.B.L.E. Navy",
       "raceStart": "Start",
       "raceFinish": "Finish",
@@ -29,7 +28,7 @@ window.MARBLE_CONFIG = {
       "timingTotal": "{total} s between activations",
       "timingHint": "Changes apply on the next activation. Enter 0.1–60 seconds.",
       "timingError": "Enter a number from 0.1 to 60 seconds.",
-      "dialogueTriggers": "Reaction trigger events",
+      "reactionTriggers": "Reaction trigger events",
       "abilitySetting": "{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses",
       "preparation": "Prepare the run",
       "startRace": "Start 60-second race",
@@ -66,11 +65,7 @@ window.MARBLE_CONFIG = {
       "toggleMapHelp": "Toggle minimap (M)",
       "expandMap": "Expand minimap",
       "route": "Open road from start to finish with eight racers",
-      "callerPortrait": "{name} radio portrait",
-      "continueRadio": "Auto advance · Space to skip",
-      "playerPortrait": "Player radio portrait",
-      "conversation": "Character reaction",
-      "closeConversation": "Close conversation",
+      "reaction": "Character reaction",
       "next": "Next ›",
       "done": "Done",
       "you": "You",
@@ -110,7 +105,6 @@ window.MARBLE_CONFIG = {
       "otherRacers": "Other racers",
       "start": "Start ○",
       "finish": "Finish ⚑",
-      "counter": "{current} / {total}",
       "inspectName": "{name}: {state}. {inspect}",
       "iconHelp": "{name} · {key} · Inspect",
       "playLabel": "Play {name}",
@@ -124,9 +118,7 @@ window.MARBLE_CONFIG = {
       "controls": "controls",
       "map": "map",
       "close": "close",
-      "expand": "expand",
-      "npcPortrait": "npcPortrait",
-      "playerPortrait": "playerPortrait"
+      "expand": "expand"
     },
     "icons": {
       "impulse": {
@@ -168,12 +160,6 @@ window.MARBLE_CONFIG = {
       "brand": {
         "viewBox": "0 0 40 40",
         "markup": "<circle cx=\"20\" cy=\"20\" r=\"15\"/><path d=\"M9 28Q30 28 30 10M8 16Q20 13 27 27\"/>"
-      },
-      "npcPortrait": {
-        "src": "assets/radio-caller.png"
-      },
-      "playerPortrait": {
-        "src": "assets/radio-player.png"
       }
     },
     "abilityDefaults": [
@@ -210,13 +196,13 @@ window.MARBLE_CONFIG = {
     "characters": {
       "npc": {
         "name": "Captain Rennick",
-        "icon": "npcPortrait",
-        "marbleIndex": 1
+        "marbleIndex": 1,
+        "portrait": "assets/radio-caller.png"
       },
       "player": {
         "name": "You",
-        "icon": "playerPortrait",
-        "marbleIndex": 2
+        "marbleIndex": 2,
+        "portrait": "assets/radio-player.png"
       }
     },
     "assets": {

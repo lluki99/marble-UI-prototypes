@@ -11,7 +11,7 @@ const racerName=i=>config.race.names[i];
 const racerLabel=i=>config.race.labels[i];
 const leaderboard=window.RaceLeaderboard.create($('live-leaderboard'),config.race,reducedMotion);
 const effectiveAbility=i=>elapsed<states[i].readyAt?(states[i].settings||abilities[i]):abilities[i];
-let race=physics.create(config.race),phase='preparing',previousRank=3,radio=window.MarbleRadio.create(config.radioTiming),enabled=new Set(Object.keys(config.events));
+let race=physics.create(config.race),phase='preparing',previousRank=3,reactions=window.MarbleReactions.create(config.reactionTiming),enabled=new Set(Object.keys(config.events));
 let elapsed=0, paused=false, selected=null, position=config.race.initialPosition, feedbackUntil=0;
 let states=abilities.map(()=>model.idle());
 const abilityButtons=[...document.querySelectorAll('[data-ability]')];
@@ -25,23 +25,11 @@ for(let i=0;i<colors.length;i++){
  const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.dataset.racer=String(i);const title=document.createElementNS('http://www.w3.org/2000/svg','title');title.textContent=racerName(i)+' · '+config.race.colorNames[i];dot.append(title);dot.setAttribute('r',i===2?'8':'6');dot.setAttribute('fill',colors[i]);dot.setAttribute('stroke',i===2?'#eaf8ff':'#102536');dot.setAttribute('stroke-width',i===2?'3':'2');$('map-markers').append(dot);
 }
 $('map-markers').append($('map-markers').querySelector('[data-racer="2"]'));
-function setReactionIdentity(index){const sphere=$('reaction-radio-marble');sphere.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M24 4L44 24L24 44L4 24Z"/><circle cx="24" cy="24" r="15"/><rect x="10" y="16" width="28" height="17"/><text x="24" y="28">'+racerLabel(index)+'</text></svg>';sphere.setAttribute('aria-label',racerName(index)+' · '+config.race.colorNames[index]);}
-for(let n=0;n<96;n++){const square=document.createElement('i');square.style.setProperty('--scan-delay',-(n*73%1700)+'ms');square.style.setProperty('--scan-period',(900+n*47%1300)+'ms');$('scan-matrix').append(square);}
-let renderedReaction=null,radioExitTimer=null;
-function cancelRadioAnimations(){clearTimeout(radioExitTimer);radioExitTimer=null;document.querySelectorAll('.radio-dock,.radio-dock *').forEach(el=>el.getAnimations().filter(a=>!a.animationName).forEach(a=>a.cancel()));}
-function clearRadio(){radioSpaceHeld=false;cancelRadioAnimations();radio=window.MarbleRadio.create(config.radioTiming);renderedReaction=null;$('radio-dock').hidden=true;$('dialogue').hidden=true;$('radio-dock').classList.remove('transmitting');}
-function event(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleRadio.enqueue(radio,id,config.events[id],elapsed);tickRadio();}
-function tickRadio(){const current=window.MarbleRadio.tick(radio,elapsed);
- if(!current){if(renderedReaction){cancelRadioAnimations();$('radio-dock').classList.remove('transmitting');$('radio-dock').animate(reducedMotion?[{opacity:1},{opacity:0}]:[{transform:'translateX(0)'},{transform:'translateX(calc(100% + 48px))'}],{duration:reducedMotion?100:180,easing:'ease-in'});radioExitTimer=setTimeout(()=>{$('radio-dock').hidden=true;$('dialogue').hidden=true;},reducedMotion?100:180);}renderedReaction=null;return;}
- if(current===renderedReaction)return;
- cancelRadioAnimations();const reaction=current.lines[0],actor=config.characters[reaction.who]||config.characters.npc;
- $('dialog-text').textContent=reaction.text;$('speaker').textContent=actor.name;$('reaction-faction').textContent=actor.faction||text('faction');
- $('reaction-portrait').setAttribute('aria-label',text('callerPortrait',{name:actor.name}));$('reaction-portrait').querySelector('.portrait-art').innerHTML=iconMarkup(actor.icon||'npcPortrait');setReactionIdentity(actor.marbleIndex??0);
- $('radio-dock').hidden=false;$('dialogue').hidden=false;$('radio-dock').classList.add('transmitting');
- $('radio-dock').animate(reducedMotion?[{opacity:0},{opacity:1}]:[{transform:'translateX(calc(100% + 48px))'},{transform:'translateX(0)'}],{duration:reducedMotion?120:380,easing:'cubic-bezier(.22,1,.36,1)'});
- $('dialog-text').animate([{opacity:.3},{opacity:1}],{duration:100});renderedReaction=current;
-}
-function detect(hits){position=physics.ranking(race).findIndex(b=>b.id===2)+1;if(position===2&&previousRank!==2)event('second');previousRank=position;if(hits.some(pair=>pair.includes(2)))event('collision');}
+const reactionView=window.ReactionView.create($('reaction-dock'),config,{reducedMotion});
+function clearReactions(){reactionSpaceHeld=false;reactions=window.MarbleReactions.create(config.reactionTiming);reactionView.clear();}
+function triggerReaction(id){if(!enabled.has(id)||phase!=='running')return;window.MarbleReactions.enqueue(reactions,id,config.events[id],elapsed);tickReactions();}
+function tickReactions(){reactionView.render(window.MarbleReactions.tick(reactions,elapsed));}
+function detect(hits){position=physics.ranking(race).findIndex(b=>b.id===2)+1;if(position===2&&previousRank!==2)triggerReaction('second');previousRank=position;if(hits.some(pair=>pair.includes(2)))triggerReaction('collision');}
 function consultAbility(i){selected=i;$('ability-detail').hidden=false;abilityButtons.forEach((b,j)=>b.classList.toggle('selected',j===i));renderAbilities();}
 function closeAbility(){const previousSelection=selected;selected=null;$('ability-detail').hidden=true;abilityButtons.forEach(b=>b.classList.remove('selected'));if(previousSelection!==null)abilityButtons[previousSelection].focus();}
 function activate(i){
@@ -93,10 +81,10 @@ function updateMap(){
   });
 }
 function setBench(open){$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));$('controls-toggle').textContent=text(open?'hideTools':'showTools');}
-function reset(){document.querySelector('.race').classList.remove('results-open');camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearRadio();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
+function reset(){document.querySelector('.race').classList.remove('results-open');camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearReactions();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
 const raceDuration=config.race.duration;
 function racerProgress(i){return Math.max(0,Math.min(1,race.balls[i].s/race.length));}
-function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();renderResults(final);document.querySelector('.race').classList.add('results-open');}
+function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';clearReactions();states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();renderResults(final);document.querySelector('.race').classList.add('results-open');}
 function renderResults(final){
  const marble=id=>'<span class="result-marble" style="--racer-color:'+colors[id]+'">'+racerLabel(id)+'</span>';
  $('result').textContent=text('resultsPlayer',{rank:position,count:final.length});
@@ -105,7 +93,7 @@ function renderResults(final){
 }
 function updateHUD(){
   leaderboard.render(race.result||physics.ranking(race));
-  $('position').textContent=position;$('position').setAttribute('aria-label','Your current position: '+position);
+  const ordinal=window.RacePosition.ordinal(position);$('position').textContent=ordinal;$('position').setAttribute('aria-label','Your current position: '+ordinal);
   $('sim-status').textContent=text('simulationStatus',{phase:text(phase),time:elapsed.toFixed(1)});
   $('finish-banner').hidden=elapsed<raceDuration;
   $('ability-feedback').classList.toggle('visible',elapsed<feedbackUntil);
@@ -128,14 +116,14 @@ Object.entries(config.events).forEach(([id,def])=>{
  const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=true;input.onchange=()=>input.checked?enabled.add(id):enabled.delete(id);label.append(input,def.label);$('event-options').append(label);
  const button=document.createElement('button');button.textContent=def.label;button.onclick=()=>{if(phase!=='running'||!enabled.has(id))return;if(id==='second')physics.forceSecond(race);if(id==='collision')physics.forceCollision(race);detect([]);};input.addEventListener('change',()=>button.disabled=!input.checked);$('event-triggers').append(button);
 });
-let radioSpaceHeld=false;
-document.addEventListener('keyup',e=>{if(e.code==='Space'&&radioSpaceHeld){e.preventDefault();radioSpaceHeld=false;}});
-window.addEventListener('blur',()=>radioSpaceHeld=false);
+let reactionSpaceHeld=false;
+document.addEventListener('keyup',e=>{if(e.code==='Space'&&reactionSpaceHeld){e.preventDefault();reactionSpaceHeld=false;}});
+window.addEventListener('blur',()=>reactionSpaceHeld=false);
 document.addEventListener('keydown',e=>{
 const editing=e.target.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"])');
-if(e.code==='Space'&&radioSpaceHeld&&!editing){e.preventDefault();return;}
-const action=window.MarbleRadio.spaceAction({space:e.code==='Space',open:!!radio.current,editing:!!editing,blocked:false,repeat:e.repeat});
-if(action){e.preventDefault();radioSpaceHeld=true;if(action==='advance'){window.MarbleRadio.advance(radio,elapsed);tickRadio();}return;}
+if(e.code==='Space'&&reactionSpaceHeld&&!editing){e.preventDefault();return;}
+const action=window.MarbleReactions.spaceAction({space:e.code==='Space',open:!!reactions.current,editing:!!editing,repeat:e.repeat});
+if(action){e.preventDefault();reactionSpaceHeld=true;if(action==='dismiss'){window.MarbleReactions.dismiss(reactions,elapsed);tickReactions();}return;}
 if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||editing)return;
 const i=abilities.findIndex(a=>a.key.toLowerCase()===e.key.toLowerCase());if(i!==-1)activate(i);else if(e.key.toLowerCase()==='m'){e.preventDefault();toggleMap();}else if(e.key==='Escape'){if(selected!==null)closeAbility();else if(!$('demo-controls').hidden)setBench(false);}
 });
@@ -184,5 +172,5 @@ function drawScene(){
   });
 }
 let previous=performance.now(),lastUI=0;
-function frame(now){const delta=Math.min((now-previous)/1000,.1);previous=now;if(phase==='running'&&!paused&&!document.hidden){let remaining=delta;while(remaining>1e-8&&race.elapsed<raceDuration){const dt=Math.min(remaining,1/120);const hits=physics.step(race,dt,model.status(states[effectIndex('impulse')],elapsed).active);elapsed=race.elapsed;detect(hits);tickRadio();remaining-=dt;}cameraModel.step(camera,race.balls[2].s,race.length,delta,reducedMotion);if(elapsed>=raceDuration)finishRace();}if(now-lastUI>80){renderAbilities();updateHUD();updateMap();if(phase==='running')tickRadio();lastUI=now;}drawScene();requestAnimationFrame(frame);}
+function frame(now){const delta=Math.min((now-previous)/1000,.1);previous=now;if(phase==='running'&&!paused&&!document.hidden){let remaining=delta;while(remaining>1e-8&&race.elapsed<raceDuration){const dt=Math.min(remaining,1/120);const hits=physics.step(race,dt,model.status(states[effectIndex('impulse')],elapsed).active);elapsed=race.elapsed;detect(hits);tickReactions();remaining-=dt;}cameraModel.step(camera,race.balls[2].s,race.length,delta,reducedMotion);if(elapsed>=raceDuration)finishRace();}if(now-lastUI>80){renderAbilities();updateHUD();updateMap();if(phase==='running')tickReactions();lastUI=now;}drawScene();requestAnimationFrame(frame);}
 new ResizeObserver(resize).observe(canvas);reset();requestAnimationFrame(frame);
