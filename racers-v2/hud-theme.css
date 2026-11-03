@@ -1,0 +1,45 @@
+/* Iteration 2 HUD palette and surfaces. Gameplay and component geometry stay independent. */
+.race-v2-page{--hud-accent:#9fdefc;--hud-text:#edf8ff;--hud-surface:rgba(9,27,42,.66);--hud-outline:rgba(159,222,252,.4)}
+.race-v2-page :focus-visible{outline-color:var(--hud-accent)}
+.race-v2-page .prototype-header{border-color:var(--hud-outline);background:rgba(9,27,42,.88)}.race-v2-page .prototype-header button,.race-v2-page .prototype-header #header-reset{background:rgba(159,222,252,.2);border:1px solid var(--hud-outline);color:var(--hud-text)}
+/* Live timing tower: no outer block, just separate translucent rows. */
+.race-v2-page .race-info{background:none;border:0;box-shadow:none;padding:0;color:var(--hud-text)}
+.race-v2-page .standings-title{margin:0 0 12px;padding:0;border:0;font:700 17px/1.25 'Barlow Condensed',Barlow,sans-serif;color:var(--hud-accent)}
+.race-v2-page #live-leaderboard li{background:rgba(9,27,42,.62);border:1px solid rgba(159,222,252,.13);margin-bottom:4px;color:var(--hud-text)}
+.race-v2-page #live-leaderboard .standings-player{background:rgba(117,199,240,.27);color:var(--hud-text);border-color:rgba(159,222,252,.68)}
+.race-v2-page #live-leaderboard .standings-player i{outline:none}.race-v2-page .standing-rank{color:var(--hud-accent)}
+/* Floating route and actual coloured marker circles, with no labels or expansion affordance. */
+.race-v2-page .map-dock .map-content{background:transparent;border-color:transparent;padding-top:0}
+.race-v2-page #mini-map .map-route{stroke:var(--hud-accent);stroke-width:16;stroke-opacity:.62}
+.race-v2-page #mini-map .start-marker{fill:rgba(9,27,42,.55);stroke:var(--hud-accent)}
+.race-v2-page #mini-map .finish-line{fill:var(--hud-accent);stroke:var(--hud-accent)}
+.race-v2-page .map-position{position:absolute;left:-38px;bottom:28%;font:italic 800 58px/1 'Barlow Condensed',Barlow,sans-serif;color:var(--hud-accent);pointer-events:none}
+/* Preserve circular abilities, icon geometry, fast active spin and cooldown rings. */
+.race-v2-page .ability{background:var(--hud-surface);border-color:var(--hud-accent);color:var(--hud-accent);box-shadow:none}
+.race-v2-page .ability:hover,.race-v2-page .ability.selected{background:rgba(91,163,200,.3);color:var(--hud-accent)}
+.race-v2-page .ability.activated{background:rgba(107,200,247,.34);border-color:var(--hud-accent);color:var(--hud-text)}
+.race-v2-page .ability.cooldown{background:rgba(9,27,42,.48);border-color:rgba(159,222,252,.36);color:var(--hud-accent)}
+.race-v2-page .ability .ability-state,.race-v2-page .ability.cooldown .ability-state{color:var(--hud-text)}
+.race-v2-page .ability.activated .ability-state{background:rgba(9,27,42,.65);color:var(--hud-accent)}
+.race-v2-page .ability.activated .ability-spinner{color:var(--hud-accent)}
+.race-v2-page .ability-key{color:var(--hud-accent)}
+.race-v2-page .cooldown-ring .ring-track{stroke:rgba(9,27,42,.7)}.race-v2-page .cooldown-ring .ring-progress{stroke:var(--hud-accent)}
+.race-v2-page .ability-detail{background:rgba(9,27,42,.86);color:var(--hud-text);border:1px solid var(--hud-outline);box-shadow:none}.race-v2-page .detail-footer>span{color:var(--hud-accent)}.race-v2-page .ability-detail button{background:rgba(159,222,252,.16);color:var(--hud-accent)}
+.race-v2-page .abilities .ability-feedback{background:rgba(9,27,42,.75);color:var(--hud-text);border:1px solid var(--hud-outline);box-shadow:none}
+/* Radio retains its silhouettes, scan matrix and transmission motion. */
+.race-v2-page .radio-dock{--signal-yellow:var(--hud-accent);--signal-black:var(--hud-surface)}
+.race-v2-page .radio-dock .dialogue-body{color:var(--hud-text)}.race-v2-page .radio-dock .dialogue-body .dialog-text{color:var(--hud-text)}
+.race-v2-page .radio-dock .terminal-title{background:rgba(9,27,42,.2)}
+.race-v2-page .radio-dock .terminal-title>span{background:rgba(159,222,252,.22);color:var(--hud-accent)}
+.race-v2-page .radio-dock .dialogue-footer span,.race-v2-page .radio-dock .dialogue-footer span:last-child{color:var(--hud-accent)}
+.race-v2-page .radio-dock .portrait-art{background:transparent}.race-v2-page .radio-dock.transmitting .portrait img{filter:grayscale(1) sepia(1) saturate(1.7) hue-rotate(155deg) contrast(1.08)}
+.race-v2-page .connection-lines{stroke:rgba(159,222,252,.4)}.race-v2-page .connection-lines .connection-pulse{stroke:var(--hud-accent)}
+.race-v2-page .radio-marble rect{fill:rgba(9,27,42,.8)}
+/* Final-race overlays keep real data and existing composition. */
+.race-v2-page .results-screen{color:var(--hud-accent);background:rgba(9,27,42,.2)}.race-v2-page .results-content{background:rgba(9,27,42,.75);border-color:var(--hud-outline)}
+.race-v2-page .podium-place{border-color:var(--hud-outline);background:rgba(9,27,42,.35)}.race-v2-page .podium-place.place-1{background:rgba(159,222,252,.13)}
+.race-v2-page .result-marble{border-color:var(--hud-accent)}.race-v2-page .results-table-head{color:var(--hud-accent)}.race-v2-page .results-ranking li{border-color:var(--hud-outline)}.race-v2-page .results-ranking .player-row{background:rgba(159,222,252,.24);color:var(--hud-text)}
+.race-v2-page .results-actions button{background:rgba(159,222,252,.22);color:var(--hud-text);border:1px solid var(--hud-outline)}.race-v2-page .results-actions a{color:var(--hud-accent)}
+@media(max-width:680px){.race-v2-page .standings-title{font-size:13px;margin-bottom:9px}.race-v2-page .map-dock .map-content{padding-top:0}.race-v2-page .map-position{font-size:43px;left:-29px;bottom:28%}}
+@media(max-width:360px){.race-v2-page .map-position{left:-10px;bottom:78%}}
+.race-v2-page .ability-detail button:disabled{opacity:.45}

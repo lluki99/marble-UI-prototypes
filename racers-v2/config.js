@@ -11,7 +11,7 @@ window.MARBLE_CONFIG = {
       "paper": "#eee3c6",
       "sage": "#526f69",
       "sea": "#17394b",
-      "gold": "#ffd348",
+      "gold": "#9fdefc",
       "rust": "#bd3449",
       "muted": "#665e50",
       "white": "#fff6da"
@@ -184,7 +184,7 @@ window.MARBLE_CONFIG = {
         "key": "Shift",
         "duration": 3,
         "cooldown": 10,
-        "description": "Leave a golden acceleration trail behind your marble for the configured duration."
+        "description": "Leave a light blue acceleration trail behind your marble for the configured duration."
       },
       {
         "id": "jump",
@@ -204,7 +204,7 @@ window.MARBLE_CONFIG = {
         "cooldown": 12,
         "fadeSeconds": 0.4,
         "minOpacity": 0.18,
-        "description": "Fade softly for the configured duration. A small golden ground marker keeps you in sight."
+        "description": "Fade softly for the configured duration. A small light blue ground marker keeps you in sight."
       }
     ],
     "characters": {
@@ -239,7 +239,7 @@ window.MARBLE_CONFIG = {
       "colorNames": [
         "Teal",
         "Crimson",
-        "Gold",
+        "Light blue",
         "Lime",
         "Violet",
         "Ivory",
@@ -249,7 +249,7 @@ window.MARBLE_CONFIG = {
       "colors": [
         "#27b6ad",
         "#e84962",
-        "#ffd348",
+        "#9fdefc",
         "#a4d94c",
         "#b186e4",
         "#fff1d0",
