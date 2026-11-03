@@ -9,3 +9,11 @@ The superseded iteration II has been replaced by the latest visual revision. The
 ## Light blue HUD
 
 `hud-theme.css` centralizes the accent (`--hud-accent`) and translucent surfaces. The leaderboard contains only the Grand Prix title and live rank/name rows. The player rank is beside the floating minimap. `race.js` renders real coloured circles without map labels; map expansion has been removed, while M still toggles the map. The player identity colour is light blue in `config.js`. Ability sizes, effects and timings are preserved.
+
+## One-shot character reactions
+
+The existing radio queue now holds one standalone reaction per event, with no reply or progression UI. Reactions retain the automatic 3–4 second duration, deduplication, pause/reset handling and Space dismissal.
+
+Edit an event in `config.js` using `reaction: {who: 'npc', text: 'Your standalone reaction.'}`. `who` selects a character from `characters`; its `name`, `icon` and `marbleIndex` drive the single header, portrait and identity circle. A character may define `faction`; otherwise the global `text.faction` is used. Character assets are unchanged.
+
+`reaction.css` defines the shared header, left portrait, reaction text and bottom identity/signal strip. On small screens the strip occupies the full bottom row to keep the portrait readable. The main text area scrolls only when a longer reaction exceeds the available height.

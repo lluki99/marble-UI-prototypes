@@ -1,4 +1,4 @@
-/* Independent snapshot for Prototype 1 - Iteration 2. Edit this file without affecting the original. */
+/* Current iteration 2: editable HUD, characters, one-shot reactions and gameplay settings. */
 window.MARBLE_CONFIG = {
   "shared": {
     "radioTiming": {
@@ -19,7 +19,7 @@ window.MARBLE_CONFIG = {
     "text": {
       "radioLink": "Radio link",
       "transmissionScan": "Scanning Incoming Transmissions",
-      "faction": "Facción X",
+      "faction": "People's M.A.R.B.L.E. Navy",
       "raceStart": "Start",
       "raceFinish": "Finish",
       "abilitySettings": "Ability timing",
@@ -29,18 +29,18 @@ window.MARBLE_CONFIG = {
       "timingTotal": "{total} s between activations",
       "timingHint": "Changes apply on the next activation. Enter 0.1–60 seconds.",
       "timingError": "Enter a number from 0.1 to 60 seconds.",
-      "dialogueTriggers": "Dialogue trigger events",
+      "dialogueTriggers": "Reaction trigger events",
       "abilitySetting": "{name}: {duration} s effect + {cooldown} s cooldown = {total} s between uses",
       "preparation": "Prepare the run",
       "startRace": "Start 60-second race",
       "testTools": "Test bench",
       "hideTools": "Hide test bench",
       "showTools": "Show test bench",
-      "enabledEvents": "Enabled radio events",
+      "enabledEvents": "Enabled reaction events",
       "marble": "{name}",
       "playerMarble": "{name}",
       "result": "Your result: {rank} / {count} · {progress}% of the trail",
-      "prepHint": "Shared racing rules, changing rhythm. Choose the radio events and start the run.",
+      "prepHint": "Shared racing rules, changing rhythm. Choose reaction events and start the run.",
       "simulationStatus": "{phase} · {time} / 60 s",
       "preparing": "Preparation",
       "running": "Running",
@@ -69,7 +69,7 @@ window.MARBLE_CONFIG = {
       "callerPortrait": "{name} radio portrait",
       "continueRadio": "Auto advance · Space to skip",
       "playerPortrait": "Player radio portrait",
-      "conversation": "Radio conversation",
+      "conversation": "Character reaction",
       "closeConversation": "Close conversation",
       "next": "Next ›",
       "done": "Done",
@@ -104,7 +104,7 @@ window.MARBLE_CONFIG = {
       "allReady": "All ready",
       "changePosition": "Change position",
       "nearFinish": "Near the finish",
-      "keyboard": "Space: skip radio · Shift / E / Q: activate · M: map",
+      "keyboard": "Space: dismiss reaction · Shift / E / Q: activate · M: map",
       "closeMap": "Close expanded map",
       "mapHeading": "The speedway",
       "otherRacers": "Other racers",
@@ -282,30 +282,18 @@ window.MARBLE_CONFIG = {
       "second": {
         "label": "Reach second place",
         "cooldown": 8,
-        "lines": [
-          {
-            "who": "npc",
-            "text": "Second place! Keep that line."
-          },
-          {
-            "who": "player",
-            "text": "One more marble ahead."
-          }
-        ]
+        "reaction": {
+          "who": "npc",
+          "text": "Second place! Keep that line."
+        }
       },
       "collision": {
         "label": "Collide with the player",
         "cooldown": 6,
-        "lines": [
-          {
-            "who": "npc",
-            "text": "A bump from the side. Steady now."
-          },
-          {
-            "who": "player",
-            "text": "Still rolling, Captain Rennick."
-          }
-        ]
+        "reaction": {
+          "who": "npc",
+          "text": "A bump from the side. Steady now."
+        }
       }
     }
   },
