@@ -78,7 +78,6 @@ window.MARBLE_CONFIG = {
       "cooldown": "Cooldown {seconds} s",
       "activeCooldown": "Active {seconds} s",
       "inspect": "Inspect ability",
-      "activated": "{name} activated",
       "timing": "{duration} s effect → {cooldown} s cooldown",
       "activeDetail": "Effect: {seconds} s left; cooldown follows",
       "finishedState": "Race finished",

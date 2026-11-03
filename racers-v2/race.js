@@ -12,7 +12,7 @@ const racerLabel=i=>config.race.labels[i];
 const leaderboard=window.RaceLeaderboard.create($('live-leaderboard'),config.race,reducedMotion);
 const effectiveAbility=i=>elapsed<states[i].readyAt?(states[i].settings||abilities[i]):abilities[i];
 let race=physics.create(config.race),phase='preparing',previousRank=3,reactions=window.MarbleReactions.create(config.reactionTiming),enabled=new Set(Object.keys(config.events));
-let elapsed=0, paused=false, selected=null, position=config.race.initialPosition, feedbackUntil=0;
+let elapsed=0, paused=false, selected=null, position=config.race.initialPosition;
 let states=abilities.map(()=>model.idle());
 const abilityButtons=[...document.querySelectorAll('[data-ability]')];
 abilityButtons.forEach((button,i)=>{
@@ -36,7 +36,6 @@ function activate(i){
   if(phase!=='running')return;
   const next=model.activate(states[i],abilities[i],elapsed);if(!next)return;
   states[i]=next;
-  $('ability-feedback').textContent=text('activated',{name:abilities[i].name});feedbackUntil=elapsed+1.8;
   renderAbilities();
 }
 function renderAbilities(){
@@ -81,10 +80,10 @@ function updateMap(){
   });
 }
 function setBench(open){$('demo-controls').hidden=!open;$('controls-toggle').setAttribute('aria-expanded',String(open));$('controls-toggle').textContent=text(open?'hideTools':'showTools');}
-function reset(){document.querySelector('.race').classList.remove('results-open');camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearReactions();feedbackUntil=0;closeAbility();$('ability-feedback').textContent='';setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
+function reset(){document.querySelector('.race').classList.remove('results-open');camera=cameraModel.create();race=physics.create(config.race);elapsed=0;phase='preparing';paused=false;position=physics.ranking(race).findIndex(b=>b.id===2)+1;previousRank=position;states=abilities.map(()=>model.idle());clearReactions();closeAbility();setMapVisible(mapInitiallyVisible,false);$('preparation').hidden=false;$('live-tools').hidden=true;$('pause').textContent=text('pause');setBench(true);renderAbilities();updateHUD();updateMap();drawScene();}
 const raceDuration=config.race.duration;
 function racerProgress(i){return Math.max(0,Math.min(1,race.balls[i].s/race.length));}
-function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';clearReactions();states=abilities.map(()=>model.idle());feedbackUntil=0;$('ability-feedback').textContent='';closeAbility();renderResults(final);document.querySelector('.race').classList.add('results-open');}
+function finishRace(){const final= race.result||physics.ranking(race).map((b,index)=>({id:b.id,rank:index+1,distance:b.s,finishedAt:b.finishedAt}));position=final.find(b=>b.id===2).rank;phase='finished';clearReactions();states=abilities.map(()=>model.idle());closeAbility();renderResults(final);document.querySelector('.race').classList.add('results-open');}
 function renderResults(final){
  const marble=id=>'<span class="result-marble" style="--racer-color:'+colors[id]+'">'+racerLabel(id)+'</span>';
  $('result').textContent=text('resultsPlayer',{rank:position,count:final.length});
@@ -96,7 +95,6 @@ function updateHUD(){
   const ordinal=window.RacePosition.ordinal(position);$('position').textContent=ordinal;$('position').setAttribute('aria-label','Your current position: '+ordinal);
   $('sim-status').textContent=text('simulationStatus',{phase:text(phase),time:elapsed.toFixed(1)});
   $('finish-banner').hidden=elapsed<raceDuration;
-  $('ability-feedback').classList.toggle('visible',elapsed<feedbackUntil);
 }
 abilityButtons.forEach((b,i)=>b.onclick=()=>consultAbility(i));
 $('ability-close').onclick=closeAbility;$('ability-activate').onclick=()=>activate(selected);
