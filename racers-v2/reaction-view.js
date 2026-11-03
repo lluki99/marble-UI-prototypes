@@ -6,7 +6,7 @@ window.ReactionView={create(dock,config,{reducedMotion=false}={}){
  // Load existing character assets once; reuse the same node for later reactions.
  Object.values(config.characters).forEach(actor=>imageFor(actor.portrait));
  emblem.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M24 4L44 24L24 44L4 24Z"/><circle cx="24" cy="24" r="15"/><rect x="10" y="16" width="28" height="17"/><text x="24" y="28"></text></svg>';
- for(let n=0;n<96;n++){const square=document.createElement('i');square.style.setProperty('--scan-delay',-(n*73%1700)+'ms');square.style.setProperty('--scan-period',(900+n*47%1300)+'ms');matrix.append(square);}
+ for(let n=0;n<96;n++){const square=document.createElement('i');const column=n%24,row=Math.floor(n/24);square.style.setProperty('--scan-delay',-(column*75)+'ms');square.className=row===0||row===3?'signal-outer':'signal-inner';matrix.append(square);}
  function cancelMotion(){clearTimeout(exitTimer);exitTimer=null;panelMotion?.cancel();textMotion?.cancel();panelMotion=null;textMotion=null;}
  function clear(){cancelMotion();current=null;dock.classList.remove('is-active');dock.hidden=true;panel.hidden=true;}
  function render(next){if(next===current)return;cancelMotion();current=next;
