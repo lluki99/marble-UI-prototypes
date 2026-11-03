@@ -1,0 +1,2 @@
+.prototype-header .iteration-link{padding:3px 0;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}.iteration-link span{font:10px/1.2 'Courier New',monospace;opacity:.85;white-space:nowrap}
+@media(max-width:360px){.prototype-header:has(.iteration-link){gap:6px}.iteration-link span{font-size:8.5px}}

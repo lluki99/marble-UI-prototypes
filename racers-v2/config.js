@@ -1,4 +1,4 @@
-/* Independent snapshot for Racers UI II. Edit this file without affecting the original. */
+/* Independent snapshot for Prototype 1 - Iteration 2. Edit this file without affecting the original. */
 window.MARBLE_CONFIG = {
   "shared": {
     "radioTiming": {
@@ -311,9 +311,9 @@ window.MARBLE_CONFIG = {
   },
   "prototypes": {
     "prototype-03": {
-      "name": "Racers UI II",
+      "name": "Prototype 1 - Iteration 2",
       "text": {
-        "pageTitle": "Racers UI II · M.A.R.B.L.E."
+        "pageTitle": "Prototype 1 - Iteration 2 · Racers UI"
       }
     }
   }
