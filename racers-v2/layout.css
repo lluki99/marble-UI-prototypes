@@ -1,4 +1,4 @@
-.race-v2-page{--hud-bottom:42px}
+.race-v2-page{--hud-bottom:42px;--ability-key-gap:8px;--ability-key-line-height:16px}
 .race-v2-page .race{min-height:640px}
 .race-v2-page .race-info{top:24px;left:24px;width:246px;padding:14px 12px 8px;border:2px solid #f1c817;clip-path:none;background:#080b0cf2;color:#f1c817}
 .standings-title{font:bold 12px 'Courier New',monospace;margin:14px 0 7px;padding-bottom:8px;border-bottom:1px solid #f1c81780}
@@ -10,14 +10,16 @@
 .standing-name{font-weight:700;white-space:nowrap;letter-spacing:.2px}
 .race-v2-page #live-leaderboard .standings-player{background:#f1c817;color:#080b0c;z-index:1}
 .race-v2-page .abilities{left:24px;right:auto;bottom:var(--hud-bottom)}
+.race-v2-page .ability-key{top:auto;bottom:calc(-1 * (var(--ability-key-gap) + var(--ability-key-line-height) + 3px));line-height:var(--ability-key-line-height)}
 .race-v2-page .ability-detail{left:0;right:auto;bottom:105px}
-.race-v2-page .map-dock{top:auto;bottom:var(--hud-bottom);right:24px}
+.race-v2-page .map-dock{top:auto;bottom:calc(var(--hud-bottom) - var(--ability-key-gap) - var(--ability-key-line-height));right:24px}
 .race-v2-page .map-content .racer-number,.race-v2-page .expanded-map .racer-number{font-size:12px}
 .race-v2-page .test-bench{left:294px;right:auto}
 .race-v2-page .podium-place strong{font-size:14px;text-align:center}
 .race-v2-page .results-ranking .result-ident{flex-wrap:wrap}
 .race-v2-page .results-ranking .result-ident strong{font-size:13px}
 @media(max-width:680px){
+.race-v2-page{--ability-key-line-height:14px}
 .race-v2-page .race{height:calc(100dvh - 64px);min-height:640px}
 .race-v2-page .race-info{left:12px;top:16px;width:166px;padding:9px 7px 6px}
 .standings-title{font-size:10px;margin:9px 0 4px;padding-bottom:5px}
@@ -31,7 +33,7 @@
 .race-v2-page .ability .ability-icon svg{width:31px;height:31px}
 .race-v2-page .ability-key{font-size:10px}
 .race-v2-page .ability-detail{left:0;bottom:90px;width:min(300px,calc(100vw - 28px))}
-.race-v2-page .map-dock{right:12px;bottom:var(--hud-bottom);top:auto}
+.race-v2-page .map-dock{right:12px;bottom:calc(var(--hud-bottom) - var(--ability-key-gap) - var(--ability-key-line-height));top:auto}
 .race-v2-page .map-content{width:108px;padding:30px 3px 4px}
 .race-v2-page .map-content svg{height:184px}
 .race-v2-page .test-bench{left:12px;right:12px;top:74px}
