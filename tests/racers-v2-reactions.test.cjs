@@ -14,3 +14,16 @@ view.render({reaction:{who:'player',text:'Player reaction'}});const playerImage=
 const css=fs.readFileSync(path.join(__dirname,'../racers-v2/reaction.css'),'utf8');assert.match(css,/\.reaction-portrait-art\{[^}]*filter:grayscale/);assert.doesNotMatch(css,/transition\s*:[^;}]*filter/);assert.doesNotMatch(css,/is-active[^}]*filter/);
 console.log('PASS: one-shot timing/queue/dismissal, persistent cached portrait nodes, actor switches, unchanged exit assets, interrupted motion and reset.');
 for(const file of ['styles.css','layout.css','hud-theme.css']){const styles=fs.readFileSync(path.join(__dirname,'../racers-v2',file),'utf8');assert.doesNotMatch(styles,/\.(?:portrait|portrait-stack|portrait-art|radio-dock|dialogue|dialogue-body|dialogue-footer|terminal-title)\b/,'legacy reaction selectors must not remain in '+file);}console.log('PASS: reaction styling has one owner; legacy portrait/dialogue selectors are absent from shared HUD styles.');
+
+// Signal frames form mirrored columns, loop continuously and stop on dismissal/reset.
+view.render({reaction:{who:'npc',text:'Signal lifecycle'}});
+const cells=nodes['scan-matrix'].children;
+for(let column=0;column<24;column++){
+ const top=cells[column].animations.at(-1).frames,bottom=cells[144+column].animations.at(-1).frames;
+ assert.deepEqual(top,bottom,'waveform must mirror around its centre');
+ assert(Math.abs(top[0].opacity-top.at(-1).opacity)<1e-10,'loop must join without a jump');
+ assert(top.every(frame=>frame.opacity>=.12&&frame.opacity<=.84));
+}
+const running=cells.map(cell=>cell.animations.at(-1));view.render(null);assert(running.every(motion=>motion.canceled));
+view.render({reaction:{who:'player',text:'Reset signal'}});const resetMotions=cells.map(cell=>cell.animations.at(-1));view.clear();assert(resetMotions.every(motion=>motion.canceled));
+console.log('PASS: symmetric square waveform, seamless loop, bounded opacity and animation cleanup.');

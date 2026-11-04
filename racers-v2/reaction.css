@@ -16,13 +16,10 @@
 .reaction-emblem svg{display:block;width:100%;height:100%;fill:none;stroke:var(--hud-accent);stroke-width:1.6}
 .reaction-emblem rect{fill:rgba(9,27,42,.8);stroke:none}
 .reaction-emblem text{fill:var(--hud-accent);stroke:none;text-anchor:middle;font:bold 12px 'Courier New',monospace}
-.reaction-signal{grid-area:signal;padding:4px 5px;min-width:0;overflow:hidden}
+.reaction-signal{grid-area:signal;position:relative;padding:4px 5px;min-width:0;overflow:hidden}
+.reaction-signal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--hud-accent);pointer-events:none}
 .scan-matrix{display:grid;grid-template-columns:repeat(24,1fr);grid-template-rows:repeat(7,minmax(0,1fr));height:100%;gap:2px}
 .scan-matrix i{background:var(--hud-accent);opacity:.15}
-/* Independent periods and phases restore the irregular radio reception flicker. */
-.reaction-dock.is-active .scan-matrix i{animation:reaction-square var(--scan-period) steps(1) infinite;animation-delay:var(--scan-delay)}
-@keyframes reaction-square{0%,65%,100%{opacity:.15}20%,45%{opacity:.65}}
 @media(min-width:681px) and (max-width:900px){.reaction-panel{grid-template-columns:88px 54px minmax(0,1fr)}.reaction-header{font-size:12px}.reaction-text{font-size:14px}}
 @media(max-width:680px){.reaction-dock{top:16px;right:12px;width:calc(100% - 202px);height:224px}.reaction-panel{grid-template-columns:64px 36px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 52px;grid-template-areas:'header header header' 'portrait text text' 'identity signal signal'}.reaction-header{min-height:36px;gap:0;font-size:11px}.reaction-name{padding:5px}.reaction-header>span{padding:5px;max-width:56%}.reaction-body{padding:8px}.reaction-text{font-size:12px;line-height:1.45}.reaction-emblem{width:36px;height:36px}.reaction-signal{padding:5px}.scan-matrix{gap:1px}}
 @media(max-width:360px){.reaction-dock{width:calc(100% - 184px);height:216px}.reaction-panel{grid-template-columns:52px 28px minmax(0,1fr)}.reaction-header{font-size:10px}.reaction-name,.reaction-header>span{padding:4px}.reaction-body{padding:6px}.reaction-text{font-size:11px}}
-@media(prefers-reduced-motion:reduce){.reaction-dock.is-active .scan-matrix i{animation:none}.reaction-dock.is-active .scan-matrix i:nth-child(3n){opacity:.55}}
