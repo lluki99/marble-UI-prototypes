@@ -19,6 +19,15 @@ abilityButtons.forEach((button,i)=>{
   button.querySelector('.ability-icon').innerHTML=iconMarkup(abilities[i].icon);
   button.querySelector('.ability-key').textContent=abilities[i].key;
 });
+// Visual preference only: keyboard event bindings continue to use ability.key below.
+const promptToggle=$('controller-prompts');
+promptToggle.setAttribute('aria-label',config.abilityPrompts.toggleLabel);
+function renderPrompts(){
+ const controller=promptToggle.checked;
+ $('prompt-layout-name').textContent=config.abilityPrompts[controller?'controllerLabel':'keyboardLabel'];
+ abilityButtons.forEach((button,i)=>button.querySelector('.ability-key').textContent=controller?config.abilityPrompts.controller[i]:abilities[i].key);
+}
+promptToggle.onchange=renderPrompts;renderPrompts();
 const route=document.querySelector('#mini-map .map-route');
 const routeLength=route.getTotalLength();
 for(let i=0;i<colors.length;i++){

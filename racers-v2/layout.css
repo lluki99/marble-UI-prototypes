@@ -1,9 +1,9 @@
 .race-v2-page{--hud-bottom:42px;--ability-key-gap:8px;--ability-key-line-height:16px}
 .race-v2-page .race{min-height:640px}
-.race-v2-page .race-info{top:24px;left:24px;width:246px;padding:14px 12px 8px;border:2px solid #f1c817;clip-path:none;background:#080b0cf2;color:#f1c817}
+.race-v2-page .race-info{top:24px;left:24px;width:148px;padding:14px 12px 8px;border:2px solid #f1c817;clip-path:none;background:#080b0cf2;color:#f1c817}
 .standings-title{font:bold 12px 'Courier New',monospace;margin:14px 0 7px;padding-bottom:8px;border-bottom:1px solid #f1c81780}
 .race-v2-page #live-leaderboard{list-style:none;margin:0;padding:0;font:14px 'Barlow Condensed',Barlow,sans-serif}
-.race-v2-page #live-leaderboard li{display:flex;align-items:center;gap:10px;height:34px;border-bottom:1px solid #f1c81730;position:relative;background:#080b0c}
+.race-v2-page #live-leaderboard li{display:flex;align-items:center;gap:6px;height:30px;border-bottom:1px solid #f1c81730;position:relative;background:#080b0c}
 .race-v2-page #live-leaderboard li:last-child{border:0}
 .standing-rank{width:25px;padding-left:6px;font:bold 15px 'Courier New',monospace;font-variant-numeric:tabular-nums}
 .race-v2-page #live-leaderboard i{width:3px;height:18px;flex-shrink:0}
@@ -21,10 +21,10 @@
 @media(max-width:680px){
 .race-v2-page{--ability-key-line-height:14px}
 .race-v2-page .race{height:calc(100dvh - 64px);min-height:640px}
-.race-v2-page .race-info{left:12px;top:16px;width:166px;padding:9px 7px 6px}
+.race-v2-page .race-info{left:12px;top:16px;width:132px;padding:9px 7px 6px}
 .standings-title{font-size:10px;margin:9px 0 4px;padding-bottom:5px}
 .race-v2-page #live-leaderboard{font-size:13px}
-.race-v2-page #live-leaderboard li{height:29px;gap:5px}
+.race-v2-page #live-leaderboard li{height:28px;gap:5px}
 .standing-rank{font-size:12px;width:20px;padding-left:3px}
 .standing-name{letter-spacing:0}
 .race-v2-page .abilities{left:14px;right:auto;bottom:var(--hud-bottom);width:196px}
@@ -41,7 +41,7 @@
 .race-v2-page:has(#demo-controls:not([hidden])) .race>.race-info,.race-v2-page:has(#demo-controls:not([hidden])) .reaction-dock,.race-v2-page:has(#demo-controls:not([hidden])) .map-dock,.race-v2-page:has(#demo-controls:not([hidden])) .abilities{visibility:hidden}
 }
 @media(max-width:360px){
-.race-v2-page .race-info{width:148px}
+.race-v2-page .race-info{width:124px}
 .race-v2-page #live-leaderboard{font-size:12px}
 .race-v2-page .map-content{width:94px}
 .race-v2-page .abilities{width:182px}
@@ -53,3 +53,9 @@
 }
 .race-v2-page .results-ranking .result-marble{font-size:12px}
 .race-v2-page #live-leaderboard .standings-player i{outline:1px solid #080b0c}
+
+.standing-team-icon{display:block;width:18px;height:18px;flex-shrink:0}
+.standing-team-icon svg,.standing-team-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.standing-team-icon svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round}
+.prompt-layout{position:absolute;left:0;bottom:calc(100% + 12px);display:flex;align-items:center;gap:7px;min-height:36px;padding:4px 8px;color:var(--hud-text);background:var(--hud-surface);border:1px solid var(--hud-outline);font:700 12px 'Courier New',monospace;cursor:pointer;white-space:nowrap}
+.prompt-layout input{width:17px;height:17px;margin:0;accent-color:var(--hud-accent);cursor:pointer}

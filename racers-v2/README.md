@@ -34,3 +34,10 @@ Portrait interference is controlled in `config.js` under `shared.portraitTransmi
 The controller lives in `reaction-view.js`, keeps displaced strips inside the permanent blue tint and uses separately filtered RGB echoes,
 and cancels its timer and animations on dismissal, character changes and Reset.
 Reduced motion keeps the portrait stable with its existing static scanlines.
+
+Ability prompt labels live in `shared.abilityPrompts` (`controller` order: LT, RT, Y).
+The HUD checkbox only swaps labels; it does not add gamepad input or change keyboard bindings.
+Reset preserves this visual preference for comparison during tests.
+Leaderboard abbreviations, `teamIds` (indexed by racer identity) and `teams` live under `shared.race`.
+Each team can replace its geometric `iconPath` with `iconSrc: "assets/team-logo.svg"` later.
+Team colours only affect leaderboard separators and placeholders; marble colours stay unchanged.

@@ -212,7 +212,16 @@ window.MARBLE_CONFIG = {
     "assets": {
       "landscape": "speedway.svg"
     },
+    "abilityPrompts": {"keyboardLabel":"Keyboard", "controllerLabel":"Xbox Controller", "toggleLabel":"Show Xbox controller prompts", "controller":["LT","RT","Y"]},
     "race": {
+      "leaderboardAbbreviations": ["MRO","CWR","YOU","PTK","U01","U02","JOY","RIV"],
+      "teamIds": ["red","yellow","red","yellow","blue","blue","green","green"],
+      "teams": {
+        "red": {"name":"Red team","color":"#ec5363","iconPath":"M8 2L14 13H2Z"},
+        "yellow": {"name":"Yellow team","color":"#f0cf4f","iconPath":"M8 1L15 8L8 15L1 8Z"},
+        "blue": {"name":"Blue team","color":"#5aaff2","iconPath":"M2 2H14V14H2Z"},
+        "green": {"name":"Green team","color":"#67cd88","iconPath":"M4 2H12L15 8L12 14H4L1 8Z"}
+      },
       "duration": 60,
       "length": 6000,
       "names": [
