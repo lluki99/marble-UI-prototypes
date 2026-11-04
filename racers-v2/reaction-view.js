@@ -6,12 +6,21 @@ window.ReactionView={create(dock,config,{reducedMotion=false}={}){
  // Load existing character assets once; reuse the same node for later reactions.
  Object.values(config.characters).forEach(actor=>imageFor(actor.portrait));
  emblem.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M24 4L44 24L24 44L4 24Z"/><circle cx="24" cy="24" r="15"/><rect x="10" y="16" width="28" height="17"/><text x="24" y="28"></text></svg>';
- // Sample one continuous signal across columns. Rows mirror around the centre line.
+ // Smooth spatial noise couples neighbouring columns; shared envelopes mimic speech.
+ // Temporal lattice wraps after 20 seconds so the procedural loop has no seam.
+ function signalNoise(x,time,period){
+  const ix=Math.floor(x),it=Math.floor(time),smooth=v=>v*v*(3-2*v);
+  const hash=(a,b)=>{const n=Math.sin(a*127.1+(b%period)*311.7)*43758.5453;return n-Math.floor(n);};
+  const u=smooth(x-ix),v=smooth(time-it),mix=(a,b,t)=>a+(b-a)*t;
+  return mix(mix(hash(ix,it),hash(ix+1,it),u),mix(hash(ix,it+1),hash(ix+1,it+1),u),v);
+ }
  function signalOpacity(column,row,time){
-  const carrier=.5+.5*Math.sin(column*.83-time*1.2);
-  const envelope=.55+.45*Math.pow(Math.sin(column*.31+time*.35),2);
-  const height=.35+3.15*carrier*envelope;
-  return .12+.72*Math.max(0,Math.min(1,height-Math.abs(row-3)+.35));
+  const envelope=.55+.45*signalNoise(7,time*2,40);
+  const body=signalNoise(column*.6,time*6,120);
+  const detail=signalNoise(column*.9+13,time*9,180);
+  const amplitude=Math.min(1,(body*.8+detail*.2)*envelope*1.45);
+  const height=1+6*amplitude;
+  return .12+.72*Math.max(0,Math.min(1,height-(6-row)));
  }
  const squares=[];
  for(let n=0;n<168;n++){
@@ -22,8 +31,8 @@ window.ReactionView={create(dock,config,{reducedMotion=false}={}){
  function startSignal(){
   stopSignal();if(reducedMotion)return;
   squares.forEach((square,n)=>{
-   const frames=Array.from({length:121},(_,frame)=>({opacity:signalOpacity(n%24,Math.floor(n/24),frame/120*Math.PI*20),offset:frame/120}));
-   signalMotions.push(square.animate(frames,{duration:24000,iterations:Infinity,easing:'linear'}));
+   const frames=Array.from({length:401},(_,frame)=>({opacity:signalOpacity(n%24,Math.floor(n/24),frame/400*20),offset:frame/400}));
+   signalMotions.push(square.animate(frames,{duration:20000,iterations:Infinity,easing:'linear'}));
   });
  }
  function cancelMotion(){clearTimeout(exitTimer);exitTimer=null;panelMotion?.cancel();textMotion?.cancel();panelMotion=null;textMotion=null;}
