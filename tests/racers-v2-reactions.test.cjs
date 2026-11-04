@@ -32,7 +32,14 @@ console.log('PASS: bottom-anchored square waveform, seamless loop, bounded opaci
 // Portrait effects never touch the base image or its permanent tint, and cancel all work.
 const effectArt=new Node(),effect=context.window.PortraitTransmission.create(effectArt,{intensity:.6,minIntervalMs:1000,maxIntervalMs:2000},false);
 effect.start(config.characters.npc.portrait);assert.equal(timers.size,1);
-const overlays=effectArt.children;assert.equal(overlays.length,3);assert(overlays.every(layer=>layer.animations.length>0));
+const overlays=effectArt.children;assert.equal(overlays.length,14);assert(overlays.every(layer=>layer.animations.length>0));
 effect.stop();assert.equal(timers.size,0);assert(overlays.every(layer=>layer.animations.every(motion=>motion.canceled)));
 const reducedArt=new Node(),reduced=context.window.PortraitTransmission.create(reducedArt,{},true);reduced.start(config.characters.player.portrait);assert.equal(timers.size,0);assert(reducedArt.children.every(layer=>layer.animations.length===0));
 console.log('PASS: transmission burst lifecycle, scheduler cancellation and reduced motion.');
+
+const aggressiveArt=new Node(),aggressiveHost=new Node(),aggressive=context.window.PortraitTransmission.create(aggressiveArt,{intensity:1},false,aggressiveHost);
+aggressive.start('assets/radio-caller.png');assert.equal(aggressiveArt.children.length,11);assert.equal(aggressiveHost.children.length,3);
+const displaced=aggressiveArt.children[0].animations.at(-1);assert.equal(displaced.options.easing,'linear','effect timing must visit intermediate burst frames');assert(displaced.frames.some(frame=>Math.abs(Number((frame.transform||'').match(/translateX\(([-.\d]+)/)?.[1]||0))>=13),'connection must tear noticeably at actual portrait resolution');
+assert(aggressiveHost.children.every(layer=>layer.animations.at(-1).frames.some(frame=>frame.opacity>.75)),'all RGB echoes must be visible during connection');
+aggressive.stop();assert.equal(timers.size,0);assert(aggressiveHost.children.every(layer=>layer.animations.every(motion=>motion.canceled)));
+console.log('PASS: strong strip displacement, three visible RGB echoes and complete channel cleanup.');

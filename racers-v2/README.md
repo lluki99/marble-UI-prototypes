@@ -29,8 +29,8 @@ Edit an event in `config.js` using `reaction: {who: 'npc', text: 'Your standalon
 Open `../tests/reaction-portrait-preview.html` to exercise both existing character assets, repeated shows, character swaps, dismissal and reset against the production presenter/styles. This test page is not part of the prototype hub.
 
 Portrait interference is controlled in `config.js` under `shared.portraitTransmission`:
-- `intensity`: 0 disables bursts; 0.55 is the default; 1 is the maximum.
+- `intensity`: 0 disables bursts; 0.9 is the default; 1 is the maximum.
 - `minIntervalMs` / `maxIntervalMs`: random interval range between bursts, in milliseconds.
-The controller lives in `reaction-view.js`, keeps overlays inside the permanent blue tint,
+The controller lives in `reaction-view.js`, keeps displaced strips inside the permanent blue tint and uses separately filtered RGB echoes,
 and cancels its timer and animations on dismissal, character changes and Reset.
 Reduced motion keeps the portrait stable with its existing static scanlines.

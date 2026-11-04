@@ -2,9 +2,9 @@
 window.MARBLE_CONFIG = {
   "shared": {
     "portraitTransmission": {
-      "intensity": 0.55,
-      "minIntervalMs": 1400,
-      "maxIntervalMs": 3200
+      "intensity": 0.9,
+      "minIntervalMs": 450,
+      "maxIntervalMs": 1100
     },
     "reactionTiming": {
       "minSeconds": 3,

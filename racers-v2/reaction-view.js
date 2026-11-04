@@ -1,26 +1,33 @@
-/* Portrait-only transmission controller. All overlays remain inside the permanently tinted host. */
-window.PortraitTransmission={create(art,settings={},reducedMotion=false){
- const intensity=Math.max(0,Math.min(1,settings.intensity??.55));
- const min=Math.max(300,settings.minIntervalMs??1400),max=Math.max(min,settings.maxIntervalMs??3200);
- const strips=[document.createElement('span'),document.createElement('span')],noise=document.createElement('span');
- strips.forEach(strip=>{strip.className='portrait-interference-strip';strip.setAttribute('aria-hidden','true');});
- noise.className='portrait-interference-noise';noise.setAttribute('aria-hidden','true');
+/* Portrait-only corruption. Base tint is invariant; RGB echoes have their own fixed channel filters. */
+window.PortraitTransmission={create(art,settings={},reducedMotion=false,portrait=art){
+ const intensity=Math.max(0,Math.min(1,settings.intensity??.9));
+ const min=Math.max(300,settings.minIntervalMs??450),max=Math.max(min,settings.maxIntervalMs??1100);
+ const make=className=>{const el=document.createElement('span');el.className=className;el.setAttribute('aria-hidden','true');return el;};
+ const strips=Array.from({length:8},()=>make('portrait-interference-strip'));
+ const tears=Array.from({length:2},()=>make('portrait-interference-tear'));
+ const channels=['red','green','blue'].map(color=>make('portrait-channel portrait-channel-'+color));
+ const noise=make('portrait-interference-noise');
  let timer=null,motions=[],active=false;
  const cancelBurst=()=>{motions.splice(0).forEach(motion=>motion.cancel());};
  function stop(){active=false;clearTimeout(timer);timer=null;cancelBurst();}
  function burst(connecting=false){
-  cancelBurst();const strength=intensity*(connecting?.8:.3+Math.random()*.7),duration=connecting?240:100+Math.random()*90;
+  cancelBurst();const large=connecting||Math.random()<.3,strength=intensity*(large?.85+Math.random()*.15:.4+Math.random()*.35);
+  const duration=connecting?340:large?240+Math.random()*100:140+Math.random()*100,delay=connecting?120:0;
+  const animate=(el,frames)=>motions.push(el.animate(frames,{duration,delay,easing:'linear'}));
   strips.forEach((strip,index)=>{
-   const top=18+Math.random()*62,height=3+Math.random()*8,shift=(index?1:-1)*strength*4;
-   strip.style.clipPath=`inset(${top}% 0 ${100-top-height}% 0)`;
-   motions.push(strip.animate([{opacity:0,transform:'translateX(0)'},{opacity:.7,transform:`translateX(${shift}px)`,offset:.25},{opacity:.35,transform:`translateX(${-shift*.45}px)`,offset:.6},{opacity:0,transform:'translateX(0)'}],{duration,delay:connecting?140:0,easing:'linear'}));
+   const top=index*12,height=large?10+Math.random()*9:5+Math.random()*6,shift=(index%2?1:-1)*strength*(large?16+Math.random()*12:8+Math.random()*8);
+   strip.style.clipPath=`inset(${top}% 0 ${Math.max(0,100-top-height)}% 0)`;
+   animate(strip,[{opacity:0,transform:'translateX(0)'},{opacity:1,transform:`translateX(${shift}px)`,offset:.15},{opacity:.95,transform:`translateX(${-shift*.7}px)`,offset:.4},{opacity:.7,transform:`translateX(${shift*.4}px)`,offset:.68},{opacity:0,transform:'translateX(0)'}]);
   });
-  motions.push(noise.animate([{opacity:0},{opacity:strength*.16,offset:.3},{opacity:0}],{duration:duration+40,delay:connecting?140:0}));
+  tears.forEach((tear,index)=>{const top=12+Math.random()*65,height=large?10+Math.random()*15:3+Math.random()*5;tear.style.clipPath=`inset(${top}% 0 ${100-top-height}% 0)`;animate(tear,[{opacity:0},{opacity:strength*(index?.7:.95),offset:.25},{opacity:0,offset:.5},{opacity:strength*.5,offset:.7},{opacity:0}]);});
+  channels.forEach((channel,index)=>{const shift=(index-1)*strength*(large?9:5);channel.style.clipPath=`inset(${large?0:20}% 0 ${large?0:25}% 0)`;animate(channel,[{opacity:0,transform:'translateX(0)'},{opacity:strength*.95,transform:`translate(${shift}px,${index===1?1:0}px)`,offset:.2},{opacity:strength*.7,transform:`translateX(${-shift*.65}px)`,offset:.55},{opacity:0,transform:'translateX(0)'}]);});
+  noise.style.backgroundPosition=`${Math.round(Math.random()*30)}px ${Math.round(Math.random()*30)}px`;
+  animate(noise,[{opacity:0},{opacity:strength*.65,offset:.15},{opacity:strength*.2,offset:.4},{opacity:strength*.5,offset:.65},{opacity:0}]);
  }
  function schedule(){timer=setTimeout(()=>{timer=null;if(!active)return;burst();schedule();},min+Math.random()*(max-min));}
  function start(source){
-  stop();strips.forEach(strip=>{strip.style.backgroundImage=`url("${source}")`;});
-  art.append(...strips,noise);
+  stop();[...strips,...channels].forEach(layer=>{layer.style.backgroundImage=`url("${source}")`;});
+  art.append(...strips,...tears,noise);portrait.append(...channels);
   if(reducedMotion||intensity===0)return;
   active=true;burst(true);schedule();
  }
@@ -29,7 +36,7 @@ window.PortraitTransmission={create(art,settings={},reducedMotion=false){
 /* Single reaction presenter. Portrait tint is permanent CSS on the host, never state-dependent. */
 window.ReactionView={create(dock,config,{reducedMotion=false}={}){
  const find=id=>dock.querySelector('#'+id),panel=find('reaction-panel'),portrait=find('reaction-portrait'),art=portrait.querySelector('.reaction-portrait-art'),name=find('reaction-name'),faction=find('reaction-faction'),text=find('reaction-text'),emblem=find('reaction-emblem'),matrix=find('scan-matrix');
- const transmission=window.PortraitTransmission.create(art,config.portraitTransmission,reducedMotion);
+ const transmission=window.PortraitTransmission.create(art,config.portraitTransmission,reducedMotion,portrait);
  const images=new Map(),signalMotions=[];let current=null,exitTimer=null,panelMotion=null,textMotion=null;
  function imageFor(source){if(!images.has(source)){const image=document.createElement('img');image.alt='';image.decoding='async';image.src=source;images.set(source,image);}return images.get(source);}
  // Load existing character assets once; reuse the same node for later reactions.

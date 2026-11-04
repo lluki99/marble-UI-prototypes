@@ -8,9 +8,15 @@
 /* Tint the persistent host, not the changing image or an active-state class. Never transition this filter. */
 .reaction-portrait-art{position:relative;display:block;width:100%;height:100%;filter:grayscale(1) sepia(1) saturate(1.7) hue-rotate(155deg) contrast(1.08)}
 .reaction-portrait-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
-.portrait-interference-strip,.portrait-interference-noise{position:absolute;inset:0;pointer-events:none;opacity:0}
-.portrait-interference-strip{background-size:cover;background-position:50% 35%;background-repeat:no-repeat}
-.portrait-interference-noise{background:repeating-linear-gradient(0deg,transparent 0 3px,#d9f5ff 3px 4px,transparent 4px 7px),repeating-linear-gradient(93deg,transparent 0 11px,#102536 11px 13px,transparent 13px 19px);mix-blend-mode:screen}
+.portrait-interference-strip,.portrait-interference-noise,.portrait-interference-tear,.portrait-channel{position:absolute;inset:0;pointer-events:none;opacity:0}
+.portrait-interference-strip,.portrait-channel{background-size:cover;background-position:50% 35%;background-repeat:no-repeat}
+.portrait-interference-tear{background:#06111b}
+.portrait-channel{mix-blend-mode:screen}
+.portrait-channel-red{filter:grayscale(1) sepia(1) saturate(9) hue-rotate(310deg)}
+.portrait-channel-green{filter:grayscale(1) sepia(1) saturate(9) hue-rotate(55deg)}
+.portrait-channel-blue{filter:grayscale(1) sepia(1) saturate(9) hue-rotate(170deg)}
+.portrait-interference-noise{background:repeating-conic-gradient(#d9f5ff 0 25%,transparent 0 50%) 0 0/5px 4px,repeating-linear-gradient(0deg,transparent 0 3px,#06111b 3px 6px,transparent 6px 11px);mix-blend-mode:screen}
+
 
 .reaction-portrait::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,#080b0c30 3px 4px);pointer-events:none}
 .reaction-body{grid-area:text;min-height:0;min-width:0;padding:12px;overflow:auto}
