@@ -27,3 +27,10 @@ Edit an event in `config.js` using `reaction: {who: 'npc', text: 'Your standalon
 `reaction.css` owns **all** reaction/portrait rules. The permanent tint is on `.reaction-portrait-art`, outside any active-state selector, and is never transitioned. The active state only controls the signal matrix/wave. This prevents the original-colour flash that occurred when the old transmitting class was removed before the exit animation completed. No loading delay or temporary portrait visibility gate is used.
 
 Open `../tests/reaction-portrait-preview.html` to exercise both existing character assets, repeated shows, character swaps, dismissal and reset against the production presenter/styles. This test page is not part of the prototype hub.
+
+Portrait interference is controlled in `config.js` under `shared.portraitTransmission`:
+- `intensity`: 0 disables bursts; 0.55 is the default; 1 is the maximum.
+- `minIntervalMs` / `maxIntervalMs`: random interval range between bursts, in milliseconds.
+The controller lives in `reaction-view.js`, keeps overlays inside the permanent blue tint,
+and cancels its timer and animations on dismissal, character changes and Reset.
+Reduced motion keeps the portrait stable with its existing static scanlines.

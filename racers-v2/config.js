@@ -1,6 +1,11 @@
 /* Editable iteration 2: one-shot reactions, portrait assets, HUD and gameplay. */
 window.MARBLE_CONFIG = {
   "shared": {
+    "portraitTransmission": {
+      "intensity": 0.55,
+      "minIntervalMs": 1400,
+      "maxIntervalMs": 3200
+    },
     "reactionTiming": {
       "minSeconds": 3,
       "maxSeconds": 4,

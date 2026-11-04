@@ -1,6 +1,35 @@
+/* Portrait-only transmission controller. All overlays remain inside the permanently tinted host. */
+window.PortraitTransmission={create(art,settings={},reducedMotion=false){
+ const intensity=Math.max(0,Math.min(1,settings.intensity??.55));
+ const min=Math.max(300,settings.minIntervalMs??1400),max=Math.max(min,settings.maxIntervalMs??3200);
+ const strips=[document.createElement('span'),document.createElement('span')],noise=document.createElement('span');
+ strips.forEach(strip=>{strip.className='portrait-interference-strip';strip.setAttribute('aria-hidden','true');});
+ noise.className='portrait-interference-noise';noise.setAttribute('aria-hidden','true');
+ let timer=null,motions=[],active=false;
+ const cancelBurst=()=>{motions.splice(0).forEach(motion=>motion.cancel());};
+ function stop(){active=false;clearTimeout(timer);timer=null;cancelBurst();}
+ function burst(connecting=false){
+  cancelBurst();const strength=intensity*(connecting?.8:.3+Math.random()*.7),duration=connecting?240:100+Math.random()*90;
+  strips.forEach((strip,index)=>{
+   const top=18+Math.random()*62,height=3+Math.random()*8,shift=(index?1:-1)*strength*4;
+   strip.style.clipPath=`inset(${top}% 0 ${100-top-height}% 0)`;
+   motions.push(strip.animate([{opacity:0,transform:'translateX(0)'},{opacity:.7,transform:`translateX(${shift}px)`,offset:.25},{opacity:.35,transform:`translateX(${-shift*.45}px)`,offset:.6},{opacity:0,transform:'translateX(0)'}],{duration,delay:connecting?140:0,easing:'linear'}));
+  });
+  motions.push(noise.animate([{opacity:0},{opacity:strength*.16,offset:.3},{opacity:0}],{duration:duration+40,delay:connecting?140:0}));
+ }
+ function schedule(){timer=setTimeout(()=>{timer=null;if(!active)return;burst();schedule();},min+Math.random()*(max-min));}
+ function start(source){
+  stop();strips.forEach(strip=>{strip.style.backgroundImage=`url("${source}")`;});
+  art.append(...strips,noise);
+  if(reducedMotion||intensity===0)return;
+  active=true;burst(true);schedule();
+ }
+ return{start,stop};
+}};
 /* Single reaction presenter. Portrait tint is permanent CSS on the host, never state-dependent. */
 window.ReactionView={create(dock,config,{reducedMotion=false}={}){
  const find=id=>dock.querySelector('#'+id),panel=find('reaction-panel'),portrait=find('reaction-portrait'),art=portrait.querySelector('.reaction-portrait-art'),name=find('reaction-name'),faction=find('reaction-faction'),text=find('reaction-text'),emblem=find('reaction-emblem'),matrix=find('scan-matrix');
+ const transmission=window.PortraitTransmission.create(art,config.portraitTransmission,reducedMotion);
  const images=new Map(),signalMotions=[];let current=null,exitTimer=null,panelMotion=null,textMotion=null;
  function imageFor(source){if(!images.has(source)){const image=document.createElement('img');image.alt='';image.decoding='async';image.src=source;images.set(source,image);}return images.get(source);}
  // Load existing character assets once; reuse the same node for later reactions.
@@ -36,13 +65,13 @@ window.ReactionView={create(dock,config,{reducedMotion=false}={}){
   });
  }
  function cancelMotion(){clearTimeout(exitTimer);exitTimer=null;panelMotion?.cancel();textMotion?.cancel();panelMotion=null;textMotion=null;}
- function clear(){cancelMotion();stopSignal();current=null;dock.classList.remove('is-active');dock.hidden=true;panel.hidden=true;}
- function render(next){if(next===current)return;cancelMotion();current=next;
+ function clear(){cancelMotion();stopSignal();transmission.stop();current=null;dock.classList.remove('is-active');dock.hidden=true;panel.hidden=true;}
+ function render(next){if(next===current)return;cancelMotion();transmission.stop();current=next;
   if(!next){stopSignal();dock.classList.remove('is-active');panelMotion=dock.animate(reducedMotion?[{opacity:1},{opacity:0}]:[{transform:'translateX(0)'},{transform:'translateX(calc(100% + 48px))'}],{duration:reducedMotion?100:180,easing:'ease-in'});exitTimer=setTimeout(()=>{dock.hidden=true;panel.hidden=true;exitTimer=null;},reducedMotion?100:180);return;}
   const reaction=next.reaction,actor=config.characters[reaction.who]||config.characters.npc,image=imageFor(actor.portrait),index=actor.marbleIndex??0;
   if(art.firstChild!==image)art.replaceChildren(image);
   portrait.setAttribute('aria-label',actor.name+' portrait');name.textContent=actor.name;faction.textContent=actor.faction||config.text.faction;text.textContent=reaction.text;emblem.querySelector('text').textContent=config.race.labels[index];emblem.setAttribute('aria-label',config.race.names[index]+' · '+config.race.colorNames[index]);
-  dock.hidden=false;panel.hidden=false;dock.classList.add('is-active');startSignal();
+  dock.hidden=false;panel.hidden=false;dock.classList.add('is-active');startSignal();transmission.start(actor.portrait);
   panelMotion=dock.animate(reducedMotion?[{opacity:0},{opacity:1}]:[{transform:'translateX(calc(100% + 48px))'},{transform:'translateX(0)'}],{duration:reducedMotion?120:380,easing:'cubic-bezier(.22,1,.36,1)'});textMotion=text.animate([{opacity:.3},{opacity:1}],{duration:100});
  }
  return{render,clear};
