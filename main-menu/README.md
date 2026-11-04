@@ -23,3 +23,5 @@ and closes all windows. Sliders retain their values during navigation but do not
 
 Reduced motion disables blinking, scan movement and glitch transitions. Run `node tests/main-menu.test.cjs`
 for the navigation/state checks. Existing prototypes have separate scripts and styles.
+
+Menu branches connect to their actual parent button and are recalculated on resize. Controls has separate Xbox Controller and Keyboard previews. The boot title and menu watermark share `.brand-title`; the three auxiliary displays use `.side-screen` masks aligned with the artwork.

@@ -2,7 +2,7 @@
 window.MAIN_MENU_CONFIG={
  title:'M.A.R.B.L.E.',computer:'assets/main-menu/computer.png',portrait:'assets/radio-caller.png',
  menu:['Start Rolling','Settings','Controls','Credits','Quit'],
- branches:[['Continue','New Game'],['Video','Audio']],
+ branches:[['Continue','New Game'],['Video','Audio'],['Xbox Controller','Keyboard']],
  save:{faction:'McIntyre',progress:45},
  settings:{Video:[65,50,80],Audio:[75,60,90]},
  credits:[['Game direction','To be announced'],['Art & sound','To be announced'],['Development','To be announced']],

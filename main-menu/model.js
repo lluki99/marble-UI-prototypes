@@ -33,11 +33,11 @@
   }
   if(event.type==='confirm'){
    if(s.zone==='main'){
-    if(s.main<2){s.branch=s.main;s.sub=null;}
+    if(s.main<3){s.branch=s.main;s.sub=null;}
     else if(s.main===4){s.modal='quit';s.choice=1;}
-    else s.panel=s.main===2?'controls':'credits';
+    else s.panel='credits';
    }else if(s.branch===0){if(s.sub===0){s.simulationKind='resume';s.screen='simulation';}else{s.modal='new';s.choice=1;}}
-   else s.panel=branches[1][s.sub];
+   else if(s.branch===1)s.panel=branches[1][s.sub];
   }
   return s;
  }

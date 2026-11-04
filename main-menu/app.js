@@ -12,7 +12,9 @@
  const windowHTML=(title,body)=>`<section class="window"><h2 class="window-title">${esc(title)}</h2><div class="window-body">${body}</div></section>`;
  function hints(){return `<div class="footer-hints"><span><b class="pad-key">A</b>${esc(t.confirm)}</span><span><b class="pad-key">B</b>${esc(t.return)}</span><span>↑ ↓ ${esc(t.navigate)}</span><span class="keyboard-hint">${esc(t.keyboard)}</span></div>`;}
  function previewHTML(){
-  if(state.zone!=='sub'||state.branch!==0)return '';
+  if(state.zone!=='sub')return '';
+  if(state.branch===2)return `<div class="preview controls-preview">${windowHTML(c.branches[2][state.sub],`<p>${esc(state.sub===0?t.xboxInfo:t.keyboardInfo)}</p>`)}</div>`;
+  if(state.branch!==0)return '';
   if(state.sub===1)return `<div class="preview">${windowHTML(t.alert,`<p>${esc(t.newWarning)}</p>`)}</div>`;
   return `<div class="preview"><div class="save-info"><img class="save-portrait" src="${esc(c.portrait)}" alt="Saved character portrait"><div class="affinity">${windowHTML(t.affinity,`<strong>${esc(c.save.faction)}</strong>`)}</div></div><div class="progress-row"><progress max="100" value="${state.progress}" aria-label="${esc(t.progress)}"></progress><strong>${state.progress}%</strong></div><div class="progress-caption">${esc(t.progress)}</div></div>`;
  }
@@ -20,16 +22,15 @@
   const panel=state.panel;let title,body;
   if(panel==='Video'||panel==='Audio'){
    title=panel;body=`<p class="small-note">${esc(t.settingsHint)}</p>`+state.settings[panel].map((value,index)=>`<label class="setting-row"><span>${esc(t.setting)} ${index+1}</span><input type="range" min="0" max="100" value="${value}" data-group="${panel}" data-setting="${index}"><output>${value}</output></label>`).join('');
-  }else if(panel==='controls'){
-   title=c.menu[2];body=`<div class="controls-grid"><section><h3>${esc(t.xbox)}</h3><p>${esc(t.xboxInfo)}</p></section><section><h3>${esc(t.keyboardTitle)}</h3><p>${esc(t.keyboardInfo)}</p></section></div><p class="small-note">${esc(t.gamepadNote)}</p>`;
   }else{title=c.menu[3];body=c.credits.map(([role,name])=>`<div class="credits-row"><strong>${esc(role)}</strong><span>${esc(name)}</span></div>`).join('');}
   return `<div class="panel-view">${windowHTML(title,body+`<button class="panel-close" data-command="back">← ${esc(t.return)}</button>`)}</div>`;
  }
  function render(focus=true){
   screen.classList.toggle('modal-open',!!state.modal);
-  if(state.screen==='start')root.innerHTML=`<div class="boot"><h1>${esc(c.title)}</h1><button class="start-button" data-command="confirm">${esc(t.start).replace(/\bA\b/,'<b class="pad-key">A</b>')}</button></div>`;
+  if(state.screen==='start')root.innerHTML=`<div class="boot"><h1 class="brand-title">${esc(c.title)}</h1><button class="start-button" data-command="confirm">${esc(t.start).replace(/\bA\b/,'<b class="pad-key">A</b>')}</button></div>`;
   else if(state.screen==='simulation')root.innerHTML=`<div class="simulation-view"><h1>${esc(state.simulationKind==='new'?t.newStart:t.resume)}</h1><p>${esc(t.simulationHint)}</p>${button(t.close,'return',0,true)}</div>`;
-  else root.innerHTML=`<div class="menu-shell"><div class="ghost-brand" aria-hidden="true">${esc(c.title)}</div>${state.panel?panelHTML():`<div class="menu-columns"><nav class="main-options" aria-label="Main menu">${c.menu.map((label,index)=>button(label,'main',index,index===state.main)).join('')}</nav><section class="secondary" aria-label="Menu options">${state.branch===null?'':`<div class="branch-list">${c.branches[state.branch].map((label,index)=>button(label,'sub',index,state.zone==='sub'&&index===state.sub)).join('')}</div>${previewHTML()}`}</section></div>`}${hints()}</div>`;
+  else root.innerHTML=`<div class="menu-shell"><div class="brand-title ghost-brand" aria-hidden="true">${esc(c.title)}</div><div class="menu-columns"><svg class="menu-connections" aria-hidden="true"><path/></svg><nav class="main-options" aria-label="Main menu">${c.menu.map((label,index)=>button(label,'main',index,index===state.main)).join('')}</nav><section class="secondary" aria-label="Menu options">${state.branch===null?'':`<div class="branch-list">${c.branches[state.branch].map((label,index)=>button(label,'sub',index,state.zone==='sub'&&index===state.sub)).join('')}</div>${previewHTML()}`}${state.panel?panelHTML():''}</section></div>${hints()}</div>`;
+  drawConnections();
   root.inert=!!state.modal;modal.hidden=!state.modal;
   if(state.modal){
    modal.innerHTML=`<section class="window modal-window" role="dialog" aria-modal="true" aria-labelledby="alert-title" aria-describedby="alert-copy"><h2 class="window-title" id="alert-title">${esc(t.alert)}</h2><div class="window-body"><p id="alert-copy">${esc(state.modal==='quit'?t.quitWarning:t.newWarning)}</p></div><div class="modal-actions">${[t.yes,t.no].map((label,index)=>button(label,'choice',index,state.choice===index)).join('')}</div></section>`;
@@ -38,6 +39,24 @@
   const selector=state.modal?`[data-kind="choice"][data-index="${state.choice}"]`:state.screen==='start'?'[data-command="confirm"]':state.screen==='simulation'?'[data-kind="return"]':state.panel?'[data-command="back"]':`[data-kind="${state.zone==='sub'?'sub':'main'}"][data-index="${state.zone==='sub'?state.sub:state.main}"]`;
   (modal.querySelector(selector)||root.querySelector(selector))?.focus({preventScroll:true});
  }
+ // Use actual button positions so every branch starts at its own parent.
+ function drawConnections(){
+  const columns=root.querySelector('.menu-columns'),svg=root.querySelector('.menu-connections');
+  if(!svg)return;
+  const parent=columns.querySelector(`[data-kind="main"][data-index="${state.branch??state.main}"]`);
+  const targets=[...columns.querySelectorAll('.branch-list .menu-button')];
+  if(!targets.length&&state.panel)targets.push(columns.querySelector('.window'));
+  const box=columns.getBoundingClientRect(),from=parent.getBoundingClientRect();
+  const x=from.right-box.left,y=from.top+from.height/2-box.top;
+  let path='';
+  targets.filter(Boolean).forEach(target=>{
+   const to=target.getBoundingClientRect(),endX=to.left-box.left,endY=to.top+to.height/2-box.top;
+   if(endX>x){const joint=x+(endX-x)/2;path+=`M${x} ${y}H${joint}V${endY}H${endX}`;}
+   else{const edge=box.width-2,joint=columns.querySelector('.main-options').getBoundingClientRect().bottom-box.top+8;path+=`M${x} ${y}H${edge}V${joint}H${to.left+to.width/2-box.left}V${to.top-box.top}`;}
+  });
+  svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);svg.querySelector('path').setAttribute('d',path);
+ }
+ new ResizeObserver(drawConnections).observe(screen);
  function send(type,extra={}){
   if(transitioning&&type!=='reset')return;
   const boot=state.screen==='start'&&type==='confirm';
