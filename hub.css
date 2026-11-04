@@ -1,0 +1,2 @@
+.hub-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:20px}.hub-actions .play-link{margin:0;min-height:52px}
+@media(max-width:680px){.hub-actions{grid-template-columns:1fr}}
