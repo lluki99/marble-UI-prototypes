@@ -72,3 +72,11 @@ Previously all finishers were clamped to the same distance, so numeric ID tie-br
 The Photoshop composition replaces the former radio hardware: a black/yellow dialogue window sits above a lower strip with the player on the left, Captain Perry on the right, a scan matrix and a pulsing link between their marble spheres. `shared.characters` associates the player with C (Gold) and Captain Perry with A (Teal); change `marbleIndex` to reassociate a character. `shared.text.faction` is the provisional literal “Facción X”; all other visible copy stays in English.
 
 The permanent player portrait is unfiltered, opaque and without scanlines when idle. On connection, a soft 140 ms pulse introduces yellow monochrome, the window reveals over the next 180 ms and text fades in by 360 ms. New lines only use the short text transition. The speaker remains opaque while the listener drops to 45%; closing removes signals and restores the original player image. Reduced motion uses short fades and a static signal pattern. All prototype cards now have a full dark border plus an inset outline above artwork, including the top edge.
+
+## Prototype 3 · Main Menu
+
+Open [prototype-04.html](prototype-04.html) for the diegetic computer menu, or use its hub card.
+Keyboard: Enter confirms, arrows navigate, Right enters an open branch, Left/Escape returns.
+Xbox A/B are visual prompts; actual gamepad input is not included in this iteration.
+See [main-menu/README.md](main-menu/README.md) for configuration, simulated save data and limitations.
+Run `node tests/main-menu.test.cjs` for navigation checks.

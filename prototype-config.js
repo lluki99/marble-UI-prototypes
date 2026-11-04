@@ -76,6 +76,8 @@ window.MARBLE_CONFIG = {
       // Optional event replacement: events:{collision:{label:'Collision',cooldown:6,lines:[{who:'npc',text:'Steady!'}]}}
     },
     'prototype-03': {file:'prototype-03.html',number:'01',name:'Prototype 1 - Iteration 2',cover:'assets/races-cover.png',previewLabel:'Marble racing at sunset',versionLabel:'Racers UI',description:'Eight racers, live standings and a floating translucent minimap.'},
-    'prototype-02': {file:'prototype-02.html',number:'02',name:'Garage UI',previewLabel:'An illustrated spacecraft garage',versionLabel:'Garage interface · Prototype 02',description:'Explore the garage and preview its interactive objects.',assets:{landscape:'assets/garage/Environment.png'},cardClass:'garage-card'}
+    'prototype-02': {file:'prototype-02.html',number:'02',name:'Garage UI',previewLabel:'An illustrated spacecraft garage',versionLabel:'Garage interface · Prototype 02',description:'Explore the garage and preview its interactive objects.',assets:{landscape:'assets/garage/Environment.png'},cardClass:'garage-card'},
+    'prototype-04': {file:'prototype-04.html',number:'03',name:'Prototype 3 · Main Menu',versionLabel:'Diegetic terminal · Iteration 1',cover:'assets/main-menu/cover.png',previewLabel:'A repaired onboard computer',description:'Explore a diegetic main menu, saved-game previews and terminal windows.'}
+
   }
 };

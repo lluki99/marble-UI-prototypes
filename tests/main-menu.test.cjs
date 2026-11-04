@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+const scope={window:{}};vm.createContext(scope);vm.runInContext(fs.readFileSync('main-menu/config.js','utf8'),scope);
+const c=scope.window.MAIN_MENU_CONFIG,m=require('../main-menu/model');let s=m.create(c);
+const act=(type,extra={})=>s=m.dispatch(s,{type,...extra},c);
+assert.equal(s.screen,'start');act('confirm');assert.equal(s.screen,'menu');assert.equal(s.main,0);assert.equal(s.branch,null);
+act('confirm');assert.equal(s.branch,0);assert.equal(s.sub,null);assert.equal(s.zone,'main');act('right');assert.equal(s.sub,0);assert.equal(s.screen,'menu');act('confirm');assert.equal(s.screen,'simulation');assert.equal(s.simulationKind,'resume');act('back');assert.equal(s.zone,'sub');
+act('down');assert.equal(s.sub,1);assert.equal(s.modal,null);assert.equal(s.progress,45);act('confirm');assert.equal(s.modal,'new');assert.equal(s.choice,1);act('confirm');assert.equal(s.modal,null);assert.equal(s.progress,45);
+act('confirm');act('left');act('confirm');assert.equal(s.progress,0);assert.equal(s.simulationKind,'new');act('back');act('left');assert.equal(s.zone,'main');assert.equal(s.sub,null);
+act('main',{index:1});act('confirm');assert.equal(s.sub,null);act('right');act('confirm');assert.equal(s.panel,'Video');act('setting',{group:'Video',index:0,value:92});act('back');act('confirm');assert.equal(s.settings.Video[0],92);act('back');act('down');act('confirm');assert.equal(s.panel,'Audio');act('back');act('left');
+act('main',{index:2});act('confirm');assert.equal(s.panel,'controls');act('back');assert.equal(s.main,2);act('main',{index:3});act('confirm');assert.equal(s.panel,'credits');act('back');
+act('main',{index:4});act('confirm');assert.equal(s.modal,'quit');act('main',{index:0});assert.equal(s.main,4,'modal blocks background changes');act('back');assert.equal(s.main,4);act('confirm');act('choice',{index:0});act('confirm');assert.equal(s.screen,'start');act('reset');assert.equal(s.progress,45);assert.equal(s.settings.Video[0],65);assert.equal(s.modal,null);assert.equal(s.main,0);
+console.log('PASS: highlight/confirm distinction, neutral branch entry, previews, simulated deletion, modal cancel/confirm, settings persistence, panels, quit and reset.');
