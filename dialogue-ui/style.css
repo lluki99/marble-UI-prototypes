@@ -35,3 +35,13 @@ body,button,a{font-family:"Times New Roman",Times,serif}
 .transcript:focus-visible{outline:0}
 @media(max-width:900px){.transcript-shell{width:calc(100% + 50px);margin-left:-50px}.portrait-rail{width:120px}.transcript{padding-left:144px}.choices{margin-left:144px}.line--continuation .line-copy{margin-left:124px}}
 @media(max-width:640px){.transcript-shell{width:100%;margin-left:0}.portrait-rail{width:112px}.transcript{padding:126px 24px 22px}.line--continuation .line-copy{margin-left:0}.choices{margin-left:24px}}
+
+/* Keep the previous dialogue-panel dimensions; portraits sit in a compact, attached grey rail. */
+.transcript-shell{width:100%;margin-left:0}
+.transcript{padding-left:34px}
+.choices{margin-left:34px}
+.portrait-rail{width:148px;padding:10px;background:rgba(194,191,184,.86);gap:6px;right:calc(100% - 2px)}
+.portrait{border:3px solid #a9a69f;background:#24211e}
+.portrait.is-speaking{border-color:var(--blue)}
+@media(max-width:900px){.transcript-shell{width:100%;margin-left:0}.portrait-rail{width:138px;padding:8px;right:calc(100% + 2px)}.transcript{padding-left:28px}.choices{margin-left:28px}}
+@media(max-width:640px){.portrait-rail{width:112px;padding:5px;right:auto;left:14px}.transcript{padding:126px 24px 22px}.choices{margin-left:24px}}
