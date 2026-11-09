@@ -11,16 +11,18 @@
 
   const isTypingTarget = target => /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
   const isSpecial = speaker => speaker === 'You' || speaker === 'Narrator';
+  const isNearBottom = () => transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 56;
 
   function setSpeaker(line) {
     portraits.forEach(portrait => {
       const active = portrait.dataset.character === line.character;
       portrait.classList.toggle('is-speaking', active);
-      portrait.classList.toggle('is-listening', Boolean(line.character) && !active);
+      portrait.classList.toggle('is-listening', !active && (Boolean(line.character) || line.speaker === 'Narrator' || line.speaker === 'You'));
     });
   }
 
   function renderHistory() {
+    const followLatest = isNearBottom();
     transcript.replaceChildren(...shown.map((line, index) => {
       const item = document.createElement('article');
       item.className = `line line--${line.speaker.toLowerCase().replace(/\s+/g, '-')}${isSpecial(line.speaker) ? ' line--break' : ''}${index === shown.length - 1 ? ' is-current' : ' is-previous'}`;
@@ -31,7 +33,9 @@
       item.append(name, copy);
       return item;
     }));
-    requestAnimationFrame(() => { transcript.scrollTop = transcript.scrollHeight; });
+    requestAnimationFrame(() => {
+      if (followLatest) transcript.scrollTop = transcript.scrollHeight;
+    });
   }
 
   function showNext() {
@@ -43,7 +47,6 @@
       } else if (phase === 'closing') {
         phase = 'complete';
         hint.innerHTML = '<kbd>Enter</kbd> Replay';
-        status.textContent = 'Log complete';
         portraits.forEach(p => p.classList.remove('is-speaking', 'is-listening'));
         return;
       }

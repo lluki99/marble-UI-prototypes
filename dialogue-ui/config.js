@@ -1,36 +1,40 @@
 window.DIALOGUE_DEMO = {
-  title: 'Mil Agitated',
+  title: 'Garage confrontation',
   opening: [
-    {speaker:'Narrator', text:'Robert has barely shut the door behind him when it swings back open and slams against the wall.'},
-    {speaker:'Narrator', text:'Mil bursts into the garage and begins pacing up and down the small room.'},
-    {speaker:'Mil Rowan', character:'mil', text:"Doesn't it bother you that your MARBLE is the most antiquated rust-ball in the league?"},
-    {speaker:'Mil Rowan', character:'mil', text:'Every time I see the press photos with your jalopy behind my machine, I feel like I am about to vomit.'}
+    {speaker:'Narrator', text:'The loft above you creaks as a figure stands up with deliberate slowness and leans over the railing, looking down at the quarrel.'},
+    {speaker:'Narrator', text:'The man holds a cup of steaming coffee. The graphic on it reads “MARBLE King.” Catchy.'},
+    {speaker:'Robert Ball', character:'robert', text:'Come on, Mil. Go easy on the kid. That was her first round in the Grand Prix.'},
+    {speaker:'Robert Ball', character:'robert', text:'She did better than most do on their first run. Better than you, for that matter.'},
+    {speaker:'Mil Rowan', character:'mil', text:"I didn't know McIntyre still kept has-beens like you on staff, old man."},
+    {speaker:'Mil Rowan', character:'mil', text:'Makes sense that they have you on kindergarten duty, though.'},
+    {speaker:'Mil Rowan', character:'mil', text:'Do you not get tired of tinkering with scraps in this shed all day?'},
+    {speaker:'Robert Ball', character:'robert', text:'Not all of us are so transfixed by rolling down hills as you, you know.'}
   ],
   choicePrompt: 'Choose your response',
   choices: [
     {
-      text:"I haven't seen any press photos where you're ahead of me, Mil.",
+      text:'Should we crack a window so the hot air can get out?',
       response:[
-        {speaker:'Narrator', text:'Mil turns to look at you without stopping his pacing. His eyes are trained on you like a hawk. You touched a very raw nerve.'},
-        {speaker:'Mil Rowan', character:'mil', text:'Look on the scoreboard.'},
-        {speaker:'Mil Rowan', character:'mil', text:'Do you see where my name is written?'},
-        {speaker:'Mil Rowan', character:'mil', text:'The Grand Prix is MINE. There is nothing you can do.'}
+        {speaker:'Narrator', text:'You suddenly become aware that there is still a crowd clamoring outside the garage door.'},
+        {speaker:'Robert Ball', character:'robert', text:'Sounds like you have some adoring fans waiting for you outside, big shot.'},
+        {speaker:'Robert Ball', character:'robert', text:'Now shoo. I need to talk to your teammate.'}
       ]
     },
     {
-      text:'Maybe if McIntyre distributed the sponsorships evenly, I could get some fresh panels on it.',
+      text:'With a teammate like this, who needs opponents?',
       response:[
-        {speaker:'Narrator', text:'Mil slows his pacing as he lets out a high net-worth stomach laugh.'},
-        {speaker:'Mil Rowan', character:'mil', text:'You think we deserve an even paycheck?'},
-        {speaker:'Mil Rowan', character:'mil', text:'Do you seriously think the two of us can even be compared?'},
-        {speaker:'Mil Rowan', character:'mil', text:'The media might say you are hot stuff now, but they said that about every rookie McIntyre has found in the last three years.'},
-        {speaker:'Mil Rowan', character:'mil', text:'They all turned out to be nobodies. You are no different.'}
+        {speaker:'Narrator', text:'You suddenly become aware that there is still a crowd clamoring outside the garage door.'},
+        {speaker:'Robert Ball', character:'robert', text:'Sounds like you have some adoring fans waiting for you outside, big shot.'},
+        {speaker:'Robert Ball', character:'robert', text:'Now shoo. I need to talk to your teammate.'}
       ]
     }
   ],
   closing: [
-    {speaker:'Narrator', text:'For a moment, it looks like Mil just walked face-first into a track barrier as he stops his pacing between two steps.'},
-    {speaker:'Mil Rowan', character:'mil', text:'You know what? I have just had a genius idea!'},
-    {speaker:'Mil Rowan', character:'mil', text:'I want the world to finally admit that I am truly unbeatable.'}
+    {speaker:'Narrator', text:'You can almost see a bolt of lightning shoot from Mil’s eyes straight into Robert’s coffee before he regains his composure.'},
+    {speaker:'Mil Rowan', character:'mil', text:'I would say “see you on the track, rookie,” but chances are you will only see my tail lights. Toodles.'},
+    {speaker:'Narrator', text:'As he turns away, Mil pulls a pair of dark shades from his coat before swinging the door open.'},
+    {speaker:'Narrator', text:'A clamor of cheers and camera shutters fills the garage for a moment before the door shuts behind him.'},
+    {speaker:'Robert Ball', character:'robert', text:'Do not let him get to you, kid. If his jacket was any looser, he might as well be a hot-air balloon.'},
+    {speaker:'Robert Ball', character:'robert', text:'Gotta give it to the guy, though. He knows how to roll a MARBLE.'}
   ]
 };
