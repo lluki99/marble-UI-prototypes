@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 4 · Dialogue UI</title>
+  <link rel="stylesheet" href="dialogue-ui/style.css?v=1">
+</head>
+<body>
+  <header class="prototype-header">
+    <a href="index.html">← All prototypes</a>
+    <span>Prototype 4 · Dialogue UI</span>
+    <button id="reset-demo" type="button">Reset dialogue</button>
+  </header>
+
+  <main class="dialogue-stage" aria-label="Dialogue UI prototype">
+    <div class="garage-background" aria-hidden="true"></div>
+    <section class="dialogue-module" aria-label="Conversation transcript">
+      <div class="portrait-rail" aria-label="Conversation participants">
+        <figure class="portrait" data-character="mil">
+          <img src="assets/dialogue/mil-rowan.png" alt="Mil Rowan">
+          <figcaption>Mil Rowan</figcaption>
+        </figure>
+        <figure class="portrait" data-character="juniper">
+          <img src="assets/dialogue/juniper-joy.png" alt="Juniper Joy">
+          <figcaption>Juniper Joy</figcaption>
+        </figure>
+      </div>
+
+      <div class="transcript-shell">
+        <div class="transcript-heading">
+          <div><span class="eyebrow">Garage log</span><strong id="scene-title">Mil Agitated</strong></div>
+          <span id="speaker-status">Narration</span>
+        </div>
+        <div id="transcript" class="transcript" tabindex="0" role="log" aria-live="polite" aria-label="Dialogue history"></div>
+        <div id="choices" class="choices" aria-label="Response options" hidden></div>
+        <div class="dialogue-footer">
+          <span id="progress">01 / 05</span>
+          <span id="hint"><kbd>Enter</kbd> Continue</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="dialogue-ui/config.js?v=1"></script>
+  <script src="dialogue-ui/app.js?v=1"></script>
+</body>
+</html>
