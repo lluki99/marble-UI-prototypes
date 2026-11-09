@@ -2,9 +2,7 @@
   const source = window.DIALOGUE_DEMO;
   const transcript = document.getElementById('transcript');
   const choices = document.getElementById('choices');
-  const progress = document.getElementById('progress');
   const hint = document.getElementById('hint');
-  const status = document.getElementById('speaker-status');
   const portraits = [...document.querySelectorAll('.portrait')];
   let queue = [];
   let shown = [];
@@ -15,7 +13,6 @@
   const isSpecial = speaker => speaker === 'You' || speaker === 'Narrator';
 
   function setSpeaker(line) {
-    status.textContent = line.speaker === 'Narrator' ? 'Narration' : `${line.speaker} speaking`;
     portraits.forEach(portrait => {
       const active = portrait.dataset.character === line.character;
       portrait.classList.toggle('is-speaking', active);
@@ -55,12 +52,6 @@
     shown.push(line);
     renderHistory();
     setSpeaker(line);
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const total = shown.length + queue.length + (phase === 'opening' ? 1 : 0);
-    progress.textContent = `${String(shown.length).padStart(2,'0')} / ${String(Math.max(total, shown.length)).padStart(2,'0')}`;
   }
 
   function showChoices() {
@@ -79,9 +70,7 @@
     });
     selectChoice(0);
     hint.innerHTML = '<kbd>↑ ↓</kbd> Choose <span aria-hidden="true">·</span> <kbd>Enter</kbd> Confirm';
-    status.textContent = 'Your response';
     portraits.forEach(p => p.classList.add('is-listening'));
-    updateProgress();
   }
 
   function selectChoice(index) {
