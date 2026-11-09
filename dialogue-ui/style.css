@@ -45,3 +45,17 @@ body,button,a{font-family:"Times New Roman",Times,serif}
 .portrait.is-speaking{border-color:var(--blue)}
 @media(max-width:900px){.transcript-shell{width:100%;margin-left:0}.portrait-rail{width:138px;padding:8px;right:calc(100% + 2px)}.transcript{padding-left:28px}.choices{margin-left:28px}}
 @media(max-width:640px){.portrait-rail{width:112px;padding:5px;right:auto;left:14px}.transcript{padding:126px 24px 22px}.choices{margin-left:24px}}
+
+/* Speaker identity uses color only on the name and its active portrait. */
+:root{--mil-red:#a52f34;--robert-yellow:#a67a16;--you-blue:#177bb8}
+.line--mil-rowan,.line--robert-ball,.line--you{padding-left:18px}
+.line--continuation .line-copy{margin-left:0}
+.line--mil-rowan strong{color:var(--mil-red)}
+.line--robert-ball strong{color:var(--robert-yellow)}
+.line--you strong{color:var(--you-blue)}
+.portrait[data-character="mil"].is-speaking{border-color:var(--mil-red);box-shadow:0 0 0 1px rgba(0,0,0,.66),0 0 18px rgba(165,47,52,.4)}
+.portrait[data-character="robert"].is-speaking{border-color:var(--robert-yellow);box-shadow:0 0 0 1px rgba(0,0,0,.66),0 0 18px rgba(166,122,22,.4)}
+.line--narrator{width:auto;max-width:46ch;margin:20px auto;padding:0;text-align:center}
+.line--narrator .line-copy{display:inline-block;max-width:44ch}
+@media(max-width:900px){.line--narrator{width:auto;margin:20px auto;padding:0}}
+@media(max-width:640px){.line--mil-rowan,.line--robert-ball,.line--you{padding-left:10px}.line--narrator{width:auto;margin:20px auto;padding:0}}
