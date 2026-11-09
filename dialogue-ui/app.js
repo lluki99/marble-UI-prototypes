@@ -8,7 +8,6 @@
   let shown = [];
   let phase = 'opening';
   let choiceIndex = 0;
-  let typing = null;
 
   const isTypingTarget = target => /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
   const isSpecial = speaker => speaker === 'You' || speaker === 'Narrator';
@@ -27,19 +26,10 @@
     transcript.replaceChildren(...shown.map((line, index) => {
       const item = document.createElement('article');
       item.className = `line line--${line.speaker.toLowerCase().replace(/\s+/g, '-')}${isSpecial(line.speaker) ? ' line--break' : ''}${index === shown.length - 1 ? ' is-current' : ' is-previous'}`;
-      const previous = shown[index - 1];
-      const sameSpeaker = previous && previous.speaker === line.speaker;
       const name = document.createElement('strong');
-      name.textContent = sameSpeaker || line.speaker === 'Narrator' ? '' : line.speaker.toUpperCase();
+      name.textContent = line.speaker;
       const copy = document.createElement('p');
-      copy.className = 'line-copy';
-      if (line.speaker === 'Narrator') {
-        item.classList.add('line--narrator');
-        copy.textContent = `[${line.text}]`;
-      } else {
-        copy.textContent = sameSpeaker ? line.text : `- ${line.text}`;
-      }
-      if (sameSpeaker) item.classList.add('line--continuation');
+      copy.textContent = line.text;
       item.append(name, copy);
       return item;
     }));
@@ -49,10 +39,6 @@
   }
 
   function showNext() {
-    if (typing) {
-      typing.finish();
-      return;
-    }
     if (!queue.length) {
       if (phase === 'opening') return showChoices();
       if (phase === 'branch') {
@@ -69,31 +55,13 @@
     shown.push(line);
     renderHistory();
     setSpeaker(line);
-    const currentCopy = transcript.lastElementChild?.querySelector('.line-copy');
-    if (currentCopy) {
-      const fullText = currentCopy.textContent;
-      currentCopy.textContent = '';
-      let index = 0;
-      let timer;
-      const finish = () => {
-        clearInterval(timer);
-        currentCopy.textContent = fullText;
-        typing = null;
-      };
-      typing = {finish};
-      timer = setInterval(() => {
-        index += 2;
-        currentCopy.textContent = fullText.slice(0, index);
-        if (index >= fullText.length) finish();
-      }, 8);
-    }
   }
 
   function showChoices() {
     phase = 'choice';
     choiceIndex = 0;
     choices.hidden = false;
-    choices.innerHTML = '';
+    choices.innerHTML = `<p>${source.choicePrompt}</p>`;
     source.choices.forEach((choice, index) => {
       const button = document.createElement('button');
       button.type = 'button';
@@ -105,10 +73,7 @@
     });
     selectChoice(0);
     hint.innerHTML = '<kbd>↑ ↓</kbd> Choose <span aria-hidden="true">·</span> <kbd>Enter</kbd> Confirm';
-    portraits.forEach(p => {
-      p.classList.remove('is-speaking');
-      p.classList.add('is-listening');
-    });
+    portraits.forEach(p => p.classList.add('is-listening'));
   }
 
   function selectChoice(index) {
@@ -125,7 +90,6 @@
     phase = 'branch';
     queue = [...choice.response];
     choices.hidden = true;
-    if (typing) typing.finish();
     renderHistory();
     hint.innerHTML = '<kbd>Enter</kbd> Continue';
     showNext();
@@ -137,8 +101,8 @@
     phase = 'opening';
     choices.hidden = true;
     hint.innerHTML = '<kbd>Enter</kbd> Continue';
-    if (typing) typing.finish();
     showNext();
+    transcript.focus({preventScroll:true});
   }
 
   document.addEventListener('keydown', event => {

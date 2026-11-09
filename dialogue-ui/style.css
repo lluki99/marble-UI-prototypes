@@ -11,27 +11,3 @@
 @media(max-width:640px){.prototype-header{grid-template-columns:1fr auto}.prototype-header>span{display:none}.dialogue-module{width:calc(100% - 28px);height:100%;margin:0 14px}.portrait-rail{top:10px;right:auto;left:14px;width:112px;display:flex;gap:4px}.portrait{width:54px;aspect-ratio:1}.portrait figcaption{display:none}.transcript{padding:138px 24px 22px}.choices{margin-inline:24px}.line{grid-template-columns:1fr}.line strong,.line p{font-size:16px}.dialogue-footer{padding-inline:18px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 .transcript:focus-visible{outline:2px dotted rgba(54,49,43,.64);outline-offset:-7px}
-
-/* Transcript pass: quiet editorial typography and compact portraits. */
-body,button,a{font-family:"Times New Roman",Times,serif}
-.portrait-rail{width:136px;top:20px;gap:6px}
-.portrait{aspect-ratio:1/1.08}
-.transcript-shell{width:calc(100% + 70px);margin-left:-70px}
-.transcript{padding-left:174px;padding-right:34px;scrollbar-color:#55504a rgba(63,58,53,.15)}
-.transcript::-webkit-scrollbar-thumb{background:#55504a;border:3px solid rgba(215,212,206,.42)}
-.transcript::-webkit-scrollbar-track{background:rgba(63,58,53,.15);border-left:1px solid rgba(63,58,53,.22)}
-.line{display:block;padding:5px 0;font-family:"Times New Roman",Times,serif}
-.line strong,.line p{font-family:inherit;font-size:clamp(15px,1.3vw,19px);font-weight:400;line-height:1.25}
-.line strong{letter-spacing:.02em}
-.line-copy{display:inline;margin:0;max-width:52ch}
-.line--continuation .line-copy{display:block;margin-left:150px}
-.line--narrator{display:block;margin:20px auto;text-align:center;max-width:46ch;font-style:normal}
-.line--narrator strong{display:none}
-.line--narrator .line-copy{max-width:100%;font-size:clamp(14px,1.2vw,17px);font-style:italic}
-.line--break{margin-top:24px}
-.choices{margin-left:174px}
-.choices>p{display:none}
-.choices button{font-family:"Times New Roman",Times,serif;font-size:17px;font-weight:400}
-.transcript:focus-visible{outline:0}
-@media(max-width:900px){.transcript-shell{width:calc(100% + 50px);margin-left:-50px}.portrait-rail{width:120px}.transcript{padding-left:144px}.choices{margin-left:144px}.line--continuation .line-copy{margin-left:124px}}
-@media(max-width:640px){.transcript-shell{width:100%;margin-left:0}.portrait-rail{width:112px}.transcript{padding:126px 24px 22px}.line--continuation .line-copy{margin-left:0}.choices{margin-left:24px}}
