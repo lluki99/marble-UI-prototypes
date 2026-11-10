@@ -1,0 +1,163 @@
+(() => {
+  const source = window.DIALOGUE_DEMO;
+  const transcript = document.getElementById('transcript');
+  const choices = document.getElementById('choices');
+  const hint = document.getElementById('hint');
+  const portraits = [...document.querySelectorAll('.portrait')];
+  let queue = [];
+  let shown = [];
+  let phase = 'opening';
+  let choiceIndex = 0;
+  let typing = null;
+
+  const isTypingTarget = target => /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
+  const isSpecial = speaker => speaker === 'You' || speaker === 'Narrator';
+  const isNearBottom = () => transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 56;
+
+  function setSpeaker(line) {
+    portraits.forEach(portrait => {
+      const active = portrait.dataset.character === line.character;
+      portrait.hidden = !active;
+      portrait.classList.toggle('is-speaking', active);
+      portrait.classList.toggle('is-listening', !active && (Boolean(line.character) || line.speaker === 'Narrator' || line.speaker === 'You'));
+    });
+  }
+
+  function renderHistory() {
+    const followLatest = isNearBottom();
+    transcript.replaceChildren(...shown.map((line, index) => {
+      const item = document.createElement('article');
+      item.className = `line line--${line.speaker.toLowerCase().replace(/\s+/g, '-')}${isSpecial(line.speaker) ? ' line--break' : ''}${index === shown.length - 1 ? ' is-current' : ' is-previous'}`;
+      const previous = shown[index - 1];
+      const sameSpeaker = previous && previous.speaker === line.speaker;
+      const name = document.createElement('strong');
+      name.textContent = sameSpeaker || line.speaker === 'Narrator' ? '' : line.speaker.toUpperCase();
+      const copy = document.createElement('p');
+      copy.className = 'line-copy';
+      if (line.speaker === 'Narrator') {
+        item.classList.add('line--narrator');
+        copy.textContent = `[${line.text}]`;
+      } else {
+        copy.textContent = sameSpeaker ? line.text : ` - ${line.text}`;
+      }
+      if (sameSpeaker) item.classList.add('line--continuation');
+      item.append(name, copy);
+      return item;
+    }));
+    requestAnimationFrame(() => {
+      if (followLatest) transcript.scrollTop = transcript.scrollHeight;
+    });
+  }
+
+  function showNext() {
+    if (typing) {
+      typing.finish();
+      return;
+    }
+    if (!queue.length) {
+      if (phase === 'opening') return showChoices();
+      if (phase === 'branch') {
+        phase = 'closing';
+        queue = [...source.closing];
+      } else if (phase === 'closing') {
+        phase = 'complete';
+        hint.innerHTML = '<kbd>Enter</kbd> Replay';
+        portraits.forEach(p => p.classList.remove('is-speaking', 'is-listening'));
+        return;
+      }
+    }
+    const line = queue.shift();
+    shown.push(line);
+    renderHistory();
+    setSpeaker(line);
+    const currentCopy = transcript.lastElementChild?.querySelector('.line-copy');
+    if (currentCopy && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const fullText = currentCopy.textContent;
+      currentCopy.textContent = '';
+      let index = 0;
+      let timer = 0;
+      const finish = () => {
+        clearInterval(timer);
+        currentCopy.textContent = fullText;
+        typing = null;
+      };
+      typing = {finish};
+      timer = setInterval(() => {
+        index += 2;
+        currentCopy.textContent = fullText.slice(0, index);
+        if (index >= fullText.length) finish();
+      }, 8);
+    }
+  }
+
+  function showChoices() {
+    phase = 'choice';
+    choiceIndex = 0;
+    choices.hidden = false;
+    choices.innerHTML = '';
+    source.choices.forEach((choice, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = choice.text;
+      button.dataset.index = index;
+      button.addEventListener('pointerenter', () => selectChoice(index));
+      button.addEventListener('click', () => commitChoice(index));
+      choices.append(button);
+    });
+    selectChoice(0);
+    hint.innerHTML = '<kbd>↑ ↓</kbd> Choose <span aria-hidden="true">·</span> <kbd>Enter</kbd> Confirm';
+    portraits.forEach(p => {
+      p.hidden = true;
+      p.classList.remove('is-speaking');
+      p.classList.add('is-listening');
+    });
+  }
+
+  function selectChoice(index) {
+    choiceIndex = (index + source.choices.length) % source.choices.length;
+    [...choices.querySelectorAll('button')].forEach((button, i) => {
+      button.classList.toggle('is-selected', i === choiceIndex);
+      button.setAttribute('aria-current', i === choiceIndex ? 'true' : 'false');
+    });
+  }
+
+  function commitChoice(index) {
+    const choice = source.choices[index];
+    shown.push({speaker:'You', text:choice.text});
+    phase = 'branch';
+    queue = [...choice.response];
+    choices.hidden = true;
+    if (typing) typing.finish();
+    renderHistory();
+    hint.innerHTML = '<kbd>Enter</kbd> Continue';
+    showNext();
+  }
+
+  function reset() {
+    portraits.forEach(p => { p.hidden = true; });
+    queue = [...source.opening];
+    shown = [];
+    phase = 'opening';
+    choices.hidden = true;
+    if (typing) typing.finish();
+    hint.innerHTML = '<kbd>Enter</kbd> Continue';
+    showNext();
+  }
+
+  document.addEventListener('keydown', event => {
+    if (isTypingTarget(event.target)) return;
+    if (phase === 'choice' && ['ArrowUp','ArrowDown'].includes(event.key)) {
+      event.preventDefault();
+      selectChoice(choiceIndex + (event.key === 'ArrowDown' ? 1 : -1));
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (phase === 'choice') commitChoice(choiceIndex);
+      else if (phase === 'complete') reset();
+      else showNext();
+    }
+  });
+  document.getElementById('reset-demo').addEventListener('click', reset);
+  reset();
+})();

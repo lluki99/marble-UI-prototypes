@@ -79,7 +79,7 @@ window.MARBLE_CONFIG = {
     'prototype-03': {hubHidden:true,file:'prototype-03.html',number:'01',name:'Prototype 1 - Iteration 2',cover:'assets/races-cover.png',previewLabel:'Marble racing at sunset',versionLabel:'Racers UI',description:'Eight racers, live standings and a floating translucent minimap.'},
     'prototype-02': {file:'prototype-02.html',number:'02',name:'Garage UI',previewLabel:'An illustrated spacecraft garage',versionLabel:'Garage interface · Prototype 02',description:'Explore the garage and preview its interactive objects.',assets:{landscape:'assets/garage/Environment.png'},cardClass:'garage-card'},
     'prototype-04': {file:'prototype-04.html',number:'03',name:'Prototype 3 · Main Menu',versionLabel:'Diegetic terminal · Iteration 1',cover:'assets/main-menu/cover.png',previewLabel:'A repaired onboard computer',description:'Explore a diegetic main menu, saved-game previews and terminal windows.'},
-    'prototype-05': {file:'prototype-05.html',number:'04',name:'Prototype 4 · Dialogue UI',versionLabel:'Conversation log · Iteration 1',cover:'assets/dialogue/garage-background.png',previewLabel:'A workshop used as the backdrop for a dialogue interface',description:'Read an accumulating conversation, track the active speaker and choose a branching response.'}
+    'prototype-05': {file:'prototype-05.html',number:'04',name:'Prototype 4 · Dialogue UI',versionLabel:'Conversation log',iterations:[{label:'Iteration 1',file:'prototype-05.html'},{label:'Iteration 2',file:'prototype-06.html'}],cover:'assets/dialogue/garage-background.png',previewLabel:'A workshop used as the backdrop for a dialogue interface',description:'Read an accumulating conversation, track the active speaker and choose a branching response.'}
 
   }
 };

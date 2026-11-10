@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 4 · Dialogue UI · Iteration 2</title>
+  <link rel="stylesheet" href="dialogue-ui-iteration-2/style.css?v=1">
+</head>
+<body>
+  <header class="prototype-header">
+    <a href="index.html">← All prototypes</a>
+    <span>Prototype 4 · Dialogue UI · Iteration 2</span>
+    <button id="reset-demo" type="button">Reset dialogue</button>
+  </header>
+
+  <main class="dialogue-stage" aria-label="Dialogue UI prototype">
+    <div class="garage-background" aria-hidden="true"></div>
+    <section class="dialogue-module" aria-label="Conversation transcript">
+      <div class="portrait-rail" aria-label="Conversation participants">
+        <figure class="portrait" data-character="mil">
+          <img src="assets/dialogue-iteration-2/mil-rowan.png" alt="Mil Rowan">
+          <figcaption>Mil Rowan</figcaption>
+          <span class="marble-preview" role="img" aria-label="Placeholder marble, 3D model unavailable"><span></span><small>Placeholder</small></span>
+        </figure>
+        <figure class="portrait" data-character="robert">
+          <img src="assets/dialogue-iteration-2/robert-ball.png" alt="Robert Ball">
+          <figcaption>Robert Ball</figcaption>
+          <span class="marble-preview" role="img" aria-label="Placeholder marble, 3D model unavailable"><span></span><small>Placeholder</small></span>
+        </figure>
+      </div>
+
+      <div class="transcript-shell">
+        <div id="transcript" class="transcript" tabindex="0" role="log" aria-live="polite" aria-label="Dialogue history"></div>
+        <div id="choices" class="choices" aria-label="Response options" hidden></div>
+        <div class="dialogue-footer">
+          <span id="hint"><kbd>Enter</kbd> Continue</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="dialogue-ui-iteration-2/config.js?v=1"></script>
+  <script src="dialogue-ui-iteration-2/app.js?v=1"></script>
+</body>
+</html>
