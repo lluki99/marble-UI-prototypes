@@ -9,14 +9,12 @@
   let phase = 'opening';
   let choiceIndex = 0;
   let typing = null;
-  let lastCharacter = null;
 
   const isTypingTarget = target => /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName) || target?.isContentEditable;
   const isSpecial = speaker => speaker === 'You' || speaker === 'Narrator';
   const isNearBottom = () => transcript.scrollHeight - transcript.scrollTop - transcript.clientHeight < 56;
 
   function setSpeaker(line) {
-    if (line.character && portraits.some(p => p.dataset.character === line.character)) lastCharacter = line.character;
     portraits.forEach(portrait => {
       const active = portrait.dataset.character === line.character;
       portrait.hidden = !active;
@@ -108,7 +106,11 @@
     });
     selectChoice(0);
     hint.innerHTML = '<kbd>↑ ↓</kbd> Choose <span aria-hidden="true">·</span> <kbd>Enter</kbd> Confirm';
-    if (lastCharacter) setSpeaker({character:lastCharacter});
+    portraits.forEach(p => {
+      p.hidden = true;
+      p.classList.remove('is-speaking');
+      p.classList.add('is-listening');
+    });
   }
 
   function selectChoice(index) {
@@ -132,7 +134,6 @@
   }
 
   function reset() {
-    lastCharacter = null;
     portraits.forEach(p => { p.hidden = true; });
     queue = [...source.opening];
     shown = [];

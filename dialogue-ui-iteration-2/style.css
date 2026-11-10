@@ -82,6 +82,3 @@ body,button,a{font-family:"Times New Roman",Times,serif}
 @keyframes placeholder-rotate{to{transform:rotate(360deg)}}
 @media(max-width:640px){.portrait-rail{top:auto;bottom:50px;left:8px;right:auto;width:108px}.portrait{width:100%;aspect-ratio:1/1.08}.marble-preview{width:38px;height:42px}.marble-preview span{width:28px;height:28px}.marble-preview small{font-size:7px}.transcript{padding-top:28px;padding-left:125px}.choices{margin-left:125px}}
 @media(prefers-reduced-motion:reduce){.marble-preview span{animation:none}}
-.portrait .marble-preview img,.portrait.is-speaking .marble-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;filter:none;transform:none}
-.marble-preview{height:60px}
-@media(max-width:640px){.marble-preview{height:38px}}
