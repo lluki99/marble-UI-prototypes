@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 5 · Computer notification · Iteration 1</title>
+  <link rel="stylesheet" href="computer-notification/style.css">
+</head>
+<body>
+  <header class="prototype-header">
+    <a href="index.html">← All prototypes</a>
+    <span>Prototype 5 · Computer notification · Iteration 1</span>
+    <button id="reset" type="button">Reset demo</button>
+  </header>
+  <main class="stage" id="stage">
+    <div class="garage" id="garage" aria-label="Garage">
+      <button class="computer-hotspot" id="open-computer" type="button" aria-label="Open the computer">
+        <span class="beacon" aria-hidden="true"></span>
+        <span class="notification" aria-hidden="true"><span class="notification-title">MESSAGE</span><span class="notification-body">NEW MESSAGE</span></span>
+      </button>
+    </div>
+    <section class="closeup" id="closeup" aria-label="Computer screen" hidden>
+      <div class="aux-screen aux-portrait" role="img" aria-label="Unit-01 portrait placeholder" aria-hidden="true">
+        <svg class="aux-art" viewBox="0 0 120 120" aria-hidden="true"><path class="portrait-back" d="M0 0h120v120H0z"/><path class="portrait-body" d="M12 120c2-27 15-37 33-41l4-10h22l4 10c18 4 31 14 33 41z"/><path class="portrait-head" d="M30 34 39 18 60 12 81 18 90 34 86 64 73 78H47L34 64z"/><path class="portrait-detail" d="M36 39h48l-4 13H40zM49 64h22M60 19v14M20 105l25-10m55 10L75 95"/><circle cx="47" cy="45" r="3"/><circle cx="73" cy="45" r="3"/></svg>
+      </div>
+      <div class="aux-screen aux-vehicle" role="img" aria-label="Marble vehicle placeholder" aria-hidden="true">
+        <svg class="aux-art" viewBox="0 0 100 100" aria-hidden="true"><circle class="vehicle-orbit" cx="50" cy="51" r="35"/><circle class="vehicle-orbit" cx="50" cy="51" r="26"/><circle class="vehicle-core" cx="50" cy="51" r="21"/><path class="vehicle-mark" d="M31 52 48 36 69 46 51 67zM14 51h10m52 0h10M50 15v10m0 52v10"/></svg>
+      </div>
+      <div class="aux-screen aux-transmission" aria-hidden="true"><div class="aux-matrix" id="aux-matrix"></div></div>
+      <div class="terminal-screen">
+        <div class="brand">M.A.R.B.L.E.</div>
+        <section class="message-window" id="message-window" role="dialog" aria-labelledby="message-title" aria-describedby="message-copy">
+          <h1 class="message-title" id="message-title">New Message</h1>
+          <div class="message-body"><p id="message-copy"><span class="message-sender">Unit-01</span> from <span class="message-accent">Red Line Protocol</span> has sent you a message.</p></div>
+          <div class="message-actions"><button id="open-message" type="button">Open</button><button id="dismiss-message" type="button">Dismiss</button></div>
+        </section>
+        <section class="chat-window" id="chat-window" aria-label="Conversation with Unit-01" hidden>
+          <header class="chat-title"><span><span id="chat-name">UNIT-01</span> <small id="chat-faction"> / RED LINE PROTOCOL</small></span><button type="button" id="close-chat" aria-label="Close conversation">×</button></header>
+          <div class="chat-transcript" id="chat-transcript" role="log" aria-live="polite" aria-label="Conversation history"></div>
+          <div class="chat-choices" id="chat-choices" aria-label="Choose your response" hidden></div>
+          <footer class="chat-footer" id="chat-footer"><span id="chat-status">INCOMING TRANSMISSION</span><button type="button" id="chat-next">Continue ›</button></footer>
+        </section>
+        <nav class="contacts-menu" id="contacts-menu" aria-label="Message contacts" hidden>
+          <div class="contacts-columns">
+            <svg class="contacts-connections" aria-hidden="true"><path></path></svg>
+            <div class="faction-list" aria-label="Factions">
+              <button type="button" data-faction="0">Mc Inyre</button>
+              <button type="button" data-faction="1">The People M.A.R.B.L.E. Navy</button>
+              <button type="button" data-faction="2">Red Line Protocol</button>
+              <button type="button" data-faction="3">Children of the Universe</button>
+              <button type="button" data-faction="4">Quit</button>
+            </div>
+            <div class="contact-list" id="contact-list" aria-label="Contacts"></div>
+          </div>
+        </nav>
+        <div class="scanlines" aria-hidden="true"></div>
+      </div>
+    </section>
+    <p class="sr-only" id="announcement" role="status"></p>
+  </main>
+  <script src="computer-notification/app.js"></script>
+</body>
+</html>
+
+
+
+
