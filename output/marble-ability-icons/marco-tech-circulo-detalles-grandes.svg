@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Marco circular tecnológico azul</title>
+  <desc id="desc">Marco azul simétrico con borde exterior circular, ajustado al círculo de referencia de 1024 por 1024 píxeles.</desc>
+  <defs>
+    <clipPath id="outer-circle"><circle cx="512" cy="512" r="464"/></clipPath>
+    <g id="cardinal"><path d="M 405 49 H 619 L 603 62 L 586 100 H 438 L 421 62 Z"/></g>
+    <g id="diagonal"><path d="M 461 49 H 563 L 550 56 L 536 73 H 488 L 474 56 Z"/></g>
+  </defs>
+  <g fill="#26b5ee" clip-path="url(#outer-circle)">
+    <circle cx="512" cy="512" r="459" fill="none" stroke="#26b5ee" stroke-width="10"/>
+    <use href="#cardinal"/>
+    <use href="#cardinal" transform="rotate(90 512 512)"/>
+    <use href="#cardinal" transform="rotate(180 512 512)"/>
+    <use href="#cardinal" transform="rotate(270 512 512)"/>
+    <use href="#diagonal" transform="rotate(45 512 512)"/>
+    <use href="#diagonal" transform="rotate(135 512 512)"/>
+    <use href="#diagonal" transform="rotate(225 512 512)"/>
+    <use href="#diagonal" transform="rotate(315 512 512)"/>
+  </g>
+</svg>
+

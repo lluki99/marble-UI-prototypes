@@ -1,0 +1,33 @@
+.results-computer{background-image:url('../assets/main-menu/computer.png')}.results-screen{container-type:inline-size}.results-content{height:100%;position:relative;z-index:1;padding:4% 5% 3%;display:flex;flex-direction:column}.results-header{display:flex;align-items:end;justify-content:space-between;border-bottom:1px solid #7799aa;padding-bottom:1.5%;flex:none}.eyebrow,.race-label,.remaining-label{font-size:1.25cqw;letter-spacing:.12em;color:#8cbbd1}.results-header h1{font-size:4cqw;line-height:1;margin:.5cqw 0 0;font-weight:600}.race-label{padding-bottom:.4cqw}.podium{height:48%;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:1%;padding:2% 8% 0}.finisher{display:flex;flex-direction:column;align-items:center;justify-content:end;min-width:0;height:100%}.rank{color:#edf8ff;font-size:2.5cqw;line-height:1;font-weight:bold;align-self:center}.rank span{font-size:1.1cqw;color:#80b4cd;letter-spacing:.1em;vertical-align:middle}.first .rank{color:#84d3ff}.marble{width:7.3cqw;aspect-ratio:1;border-radius:50%;border:.18cqw solid #85a8b6;background:radial-gradient(circle at 34% 26%,#d3edf0 0 3%,transparent 4%),linear-gradient(135deg,transparent 35%,#0b1720 36% 48%,transparent 49%),radial-gradient(circle at 35% 30%,var(--light),var(--base) 57%,#08121b 95%);box-shadow:inset -.5cqw -.6cqw 1cqw #0009,0 .3cqw .8cqw #0008;margin:.7cqw 0}.first .marble{width:9cqw}.silver{--light:#d6e0dc;--base:#76878d}.red{--light:#f37872;--base:#91363e}.dark{--light:#98a9a3;--base:#253e41}.navy{--light:#7b9ba2;--base:#344d5b}.rust{--light:#d68e79;--base:#713f43}.olive{--light:#c6b873;--base:#6c653a}.green{--light:#93a980;--base:#475e4c}.crimson{--light:#dc8389;--base:#813c50}.step{width:100%;min-height:5.4cqw;border:1px solid #6a93a8;background:linear-gradient(180deg,#27455399,#142b38aa);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:.8cqw .3cqw}.first .step{min-height:7.5cqw;border-color:#72caff;background:linear-gradient(180deg,#2c5368,#183643)}.third .step{min-height:4.8cqw}.step strong,.remaining strong{font-size:1.65cqw;line-height:1.1}.step small,.remaining small{font-size:1.05cqw;color:#a1bdca;line-height:1.2;margin-top:.3cqw}.remaining-label{display:flex;justify-content:space-between;margin:2% 0 1%;border-bottom:1px solid #527383;padding-bottom:.7%}.remaining{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:1%;flex:1;min-height:0}.remaining li{border:1px solid #4b6979;background:#142b3880;padding:.5cqw;display:flex;align-items:center;flex-direction:column;min-width:0;text-align:center}.remaining .position{align-self:stretch;text-align:left;color:#c5e8fa;font-size:1.5cqw;font-weight:bold;line-height:1}.position em{float:right;font-style:normal;color:#84d3ff;font-size:1.1cqw}.remaining .small{width:4.2cqw;margin:.3cqw 0}.remaining strong{font-size:1.3cqw}.remaining small{font-size:.95cqw}.remaining .player{border-color:#69c4fb;box-shadow:inset .3cqw 0 #69c4fb}.results-footer{display:flex;justify-content:space-between;align-items:center;margin-top:2%;color:#8cbbd1;font-size:1.2cqw}.results-footer a{color:#d9f2ff;text-decoration:none;display:flex;align-items:center;gap:.5cqw}.results-footer a:hover{text-decoration:underline}.results-footer a:focus-visible{outline:2px solid #62c4ff;outline-offset:3px}@media(max-width:760px){.results-content{padding:5%}.results-header h1{font-size:5cqw}.eyebrow,.race-label,.remaining-label,.results-footer{font-size:1.8cqw}.podium{height:45%;padding-left:2%;padding-right:2%}.rank{font-size:3.5cqw}.rank span{font-size:1.5cqw}.marble{width:10cqw}.first .marble{width:12cqw}.step strong{font-size:2.1cqw}.step small{font-size:1.35cqw}.remaining .position{font-size:2cqw}.remaining .small{width:6cqw}.remaining strong{font-size:1.7cqw}.remaining small{font-size:1.25cqw}}
+
+/* Standalone results display: the terminal fills the canvas without computer artwork. */
+body{background:#0b1822}
+.results-computer{background:radial-gradient(ellipse at 50% 30%,#203e4d 0%,#101f2a 65%,#09131b 100%);border:1px solid #527383;box-shadow:0 12px 40px #0006}
+.results-screen{position:absolute;inset:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 40%,#1b3442,#0b1923 85%);box-shadow:inset 0 0 45px #02090d99}
+@media(max-width:760px){.results-computer{width:100%;min-height:calc(100dvh - 44px);aspect-ratio:auto}.results-screen{inset:0;width:100%;height:100%;border:0;outline:0;box-shadow:inset 0 0 30px #02090d99}}
+
+/* Reveal the platforms first, then their racers, followed by the remaining field. */
+@media (prefers-reduced-motion: no-preference){
+  .podium .step{animation:podium-rise 800ms cubic-bezier(.22,.72,.2,1) 200ms both}
+  .podium .step strong,.podium .step small{animation:results-fade 350ms ease-out 1000ms both}
+  .podium .marble,.podium .rank{animation:racer-reveal 500ms cubic-bezier(.2,.7,.2,1) 1000ms both}
+  .remaining-label{animation:results-fade 350ms ease-out 1600ms both}
+  .remaining li{animation:racer-reveal 400ms ease-out both}
+  .remaining li:nth-child(1){animation-delay:1750ms}
+  .remaining li:nth-child(2){animation-delay:1870ms}
+  .remaining li:nth-child(3){animation-delay:1990ms}
+  .remaining li:nth-child(4){animation-delay:2110ms}
+  .remaining li:nth-child(5){animation-delay:2230ms}
+}
+@keyframes podium-rise{from{clip-path:inset(100% 0 0);opacity:0}to{clip-path:inset(0);opacity:1}}
+@keyframes racer-reveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes results-fade{from{opacity:0}to{opacity:1}}
+
+/* Background artwork is kept separate so only the scenery is blurred. */
+.results-computer{overflow:hidden;background:#0b1822}
+.results-computer::before{content:'';position:absolute;inset:-12px;background:url('../assets/race-results-background.png') center / cover no-repeat;filter:blur(6px);pointer-events:none}
+.results-screen{background:radial-gradient(ellipse at 50% 40%,rgba(19,43,56,.70),rgba(7,20,29,.82) 90%)}
+
+/* Leave the circuit visible around the translucent results panel. */
+.results-screen{inset:5% 10%;width:80%;height:90%;border:1px solid #81adc088;box-shadow:0 8px 28px #02090d88,inset 0 0 35px #02090d66}
+@media(max-width:760px){.results-screen{inset:4% 4%;width:92%;height:92%;border:1px solid #81adc088}}

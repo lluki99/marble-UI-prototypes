@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 248" width="248" height="248" role="img" aria-labelledby="title">
+  <title id="title">Forma circular de doce pétalos</title>
+  <defs>
+    <path id="petalo" d="M 105 77 L 101 42 C 100 27 110 18 124 18 C 138 18 148 27 147 42 L 143 77 Z"/>
+  </defs>
+  <g fill="#000">
+    <circle cx="124" cy="124" r="68"/>
+    <use href="#petalo"/>
+    <use href="#petalo" transform="rotate(30 124 124)"/>
+    <use href="#petalo" transform="rotate(60 124 124)"/>
+    <use href="#petalo" transform="rotate(90 124 124)"/>
+    <use href="#petalo" transform="rotate(120 124 124)"/>
+    <use href="#petalo" transform="rotate(150 124 124)"/>
+    <use href="#petalo" transform="rotate(180 124 124)"/>
+    <use href="#petalo" transform="rotate(210 124 124)"/>
+    <use href="#petalo" transform="rotate(240 124 124)"/>
+    <use href="#petalo" transform="rotate(270 124 124)"/>
+    <use href="#petalo" transform="rotate(300 124 124)"/>
+    <use href="#petalo" transform="rotate(330 124 124)"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">RLP logo</title>
+  <desc id="desc">White geometric RLP lettering within a segmented circular frame.</desc>
+
+  <g fill="#fff">
+    <g fill="none" stroke="#fff" stroke-width="44" stroke-linecap="butt">
+      <path d="M 750 143 A 360 360 0 0 0 412 472"/>
+      <path d="M 786 143 A 360 360 0 0 1 1124 472"/>
+      <path d="M 412 544 A 360 360 0 0 0 750 863"/>
+      <path d="M 1124 544 A 360 360 0 0 1 786 863"/>
+    </g>
+    <path d="M 680 193 H 856 L 837 214 H 699 Z M 699 798 H 837 L 856 819 H 680 Z"/>
+    <path d="M 347 497 H 450 L 469 520 H 365 L 347 504 Z M 1086 497 H 1189 V 504 L 1171 520 H 1067 Z"/>
+    <path fill-rule="evenodd" d="M 500 392 H 626 L 650 416 V 482 L 625 507 L 659 610 H 609 L 578 520 H 550 V 610 H 500 Z M 550 434 V 478 H 596 L 604 470 V 442 L 596 434 Z"/>
+    <path d="M 682 392 H 732 V 566 H 809 V 610 H 682 Z"/>
+    <path fill-rule="evenodd" d="M 832 392 H 957 L 984 419 V 492 L 957 519 H 882 V 610 H 832 Z M 882 434 V 477 H 928 L 936 469 V 442 L 928 434 Z"/>
+  </g>
+</svg>
+

@@ -1,0 +1,16 @@
+const fs = require('fs');
+const dir = 'output/marble-ability-icons'; fs.mkdirSync(dir,{recursive:true});
+const icons = [
+['jump','Jump',`<path d="M64 25 44 46h12v20h16V46h12L64 25Z"/><path d="M38 79c5 5 14 8 26 8s21-3 26-8l-3 10c-5 4-13 6-23 6s-18-2-23-6Z"/><path d="m35 92 9 6-5 3-10-5Zm58 0 6 4-10 5-5-3Z"/>`],
+['impulse','Impulse',`<path d="M67 37c-4-4-10-6-16-6-13 0-23 10-23 23 0 7 3 13 8 17l-11 9 23-4c3 1 5 1 8 1 12 0 22-10 22-23 0-3-1-6-2-8l-9 6V37Z"/><path d="m69 57 24-21-4 14 12 2-27 27 6-17Z"/><path d="m27 83 19-5-12 10-15 3Zm13 9 14-5-8 8-13 4Z"/>`],
+['steering','Steering',`<circle cx="64" cy="62" r="17"/><path d="M38 55 25 65l13 10v-6h8v-8h-8Zm52 0 13 10-13 10v-6h-8v-8h8Z"/><path d="M48 89c5 3 10 4 16 4s11-1 16-4l-3 8c-4 2-8 3-13 3s-9-1-13-3Z"/>`],
+['energy-capacitor','Energy Capacitor',`<path d="M64 28a25 25 0 1 0 0 50 25 25 0 0 0 0-50Zm3 7-10 16h8l-5 19 15-23h-9l5-12Z" fill-rule="evenodd"/><path d="m28 39 10 5-8 4 2 9-9-9Zm72 0-10 5 8 4-2 9 9-9ZM35 81c8 8 18 12 29 12s21-4 29-12l-4 12c-7 5-16 8-25 8s-18-3-25-8Z"/>`],
+['slowing-aura','Slowing Aura',`<path d="M64 28c-20 0-36 16-36 36s16 36 36 36 36-16 36-36-16-36-36-36Zm0 7c16 0 29 13 29 29S80 93 64 93 35 80 35 64s13-29 29-29Z" fill-rule="evenodd"/><circle cx="64" cy="64" r="14"/><path d="m48 44 5 5-7 1Zm32 0 2 6-7-1ZM44 77l6-2-1 7Zm40 0-5 5-1-7Z"/><path d="M57 39h14v4H57Zm0 46h14v4H57Z"/>`],
+['machine-learning','Machine Learning',`<circle cx="64" cy="38" r="13"/><path d="M60 52h8v7l20 12-4 7-20-12-20 12-4-7 20-12Z"/><circle cx="42" cy="83" r="13"/><circle cx="86" cy="83" r="13"/><path d="m61 76 3-4 3 4-3 4Z"/>`],
+['submerge','Submerge',`<path d="M25 60h78v7H25Z"/><path d="M40 54c3-10 12-17 24-17s21 7 24 17h-8c-3-6-9-10-16-10s-13 4-16 10Z"/><path d="M60 70h8v13h9L64 98 51 83h9Z"/><path d="m27 74 12 3v6l-12-3Zm74 0-12 3v6l12-3Z"/>`]
+];
+function svg(name,label,body){return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title"><title id="title">${label}</title><circle cx="64" cy="64" r="58" fill="#242a35" stroke="#9bdfff" stroke-width="4"/><g fill="#9bdfff">${body}</g></svg>\n`}
+for(const [name,label,body] of icons) fs.writeFileSync(`${dir}/${name}.svg`,svg(name,label,body));
+let sheet=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="670" viewBox="0 0 1200 670"><rect width="1200" height="670" fill="#17202b"/><text x="70" y="75" fill="#eef8ff" font-family="Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="3">MARBLE ABILITIES</text><text x="70" y="107" fill="#9bb5c4" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">VECTOR ICON SET</text>`;
+icons.forEach(([name,label,body],i)=>{let x=70+(i%4)*280,y=150+Math.floor(i/4)*250;sheet+=`<g transform="translate(${x},${y})"><circle cx="64" cy="64" r="58" fill="#242a35" stroke="#9bdfff" stroke-width="4"/><g fill="#9bdfff">${body}</g><text x="64" y="162" text-anchor="middle" fill="#eef8ff" font-family="Arial,sans-serif" font-size="16" font-weight="700">${label}</text></g>`});
+sheet+='</svg>';fs.writeFileSync(`${dir}/preview.svg`,sheet);

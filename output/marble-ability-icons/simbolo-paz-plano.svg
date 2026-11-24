@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="440" viewBox="0 0 440 440" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo de la paz</title>
+  <desc id="desc">Símbolo amarillo con fondo naranja en colores planos y exterior transparente.</desc>
+  <circle cx="220" cy="220" r="203" fill="#ec6033"/>
+  <g fill="none" stroke="#efb02c" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="220" cy="220" r="195"/>
+    <path d="M220 35 V405 M220 224 L88 351 M220 224 L352 351"/>
+  </g>
+</svg>
